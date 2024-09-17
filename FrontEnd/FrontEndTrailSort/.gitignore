@@ -1,5 +1,5 @@
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +7,43 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Node modules and build output
+node_modules/
+dist/
+dist-ssr/
+
+# Environment files
+.env
+.env.local
+.env.*.local
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# Optional: Lockfiles (useful if you want reproducible builds, but ignore if you're fine without them)
+package-lock.json
+yarn.lock
+
+# Coverage directory used by testing tools
+coverage/
+
+# Output of ESLint/Prettier (if you're using them)
+.eslintcache
+.prettiercache
+
+# Vite specific cache
+.vite/
+.vitest/
+
+# Optional: Mac specific system files
+*.swp
+*.swo
+*.swn
