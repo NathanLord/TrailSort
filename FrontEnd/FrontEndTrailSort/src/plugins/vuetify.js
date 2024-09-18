@@ -19,6 +19,13 @@ const vuetify = createVuetify({
                     primary: '#BB86FC',
                     secondary: '#03DAC6',
                     error: '#CF6679',
+
+                    // https://vuetifyjs.com/en/styles/colors/#material-colors
+                    // Custom orange colors
+                    orangeDarken1: '#FB8C00',
+                    orangeDarken2: '#F57C00',
+                    orangeDarken3: '#EF6C00',
+                    orangeDarken4: '#E65100',
                 },
             },
         },

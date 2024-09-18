@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 
-import vuetify from './plugins/vuetify'
 import App from './App.vue'
+import vuetify from './plugins/vuetify'
 import router from './router'
 
 
@@ -10,6 +10,7 @@ const app = createApp(App)
 
 // Use Vuetify
 app.use(vuetify)
+
 
 // Use Router
 app.use(router)

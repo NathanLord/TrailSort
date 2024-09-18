@@ -1,4 +1,5 @@
 <script setup>
+
   import { ref } from 'vue'
 
   const drawer = ref(false)
@@ -14,7 +15,7 @@
       <v-app-bar app>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
   
-        <v-toolbar-title>My Menu</v-toolbar-title>
+        <v-toolbar-title>Trail Sort</v-toolbar-title>
   
         <v-spacer></v-spacer>
   
@@ -68,9 +69,13 @@
   /* Make sure the router-link doesn't have underline and text color is white */
   .router-link {
     text-decoration: none;
-    color: white; /* Sets the text color of the titles to white */
+    color: white; 
     display: flex;
     align-items: center;
+  }
+
+  .router-link-exact-active{
+    color: rgb(var(--v-theme-orangeDarken1)); /* https://stackoverflow.com/questions/48280990/using-custom-theming-in-vuetify-and-pass-color-variables-to-components */
   }
 
 </style>
