@@ -15,9 +15,12 @@
       <v-app-bar app>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
   
-        <v-toolbar-title>Trail Sort</v-toolbar-title>
-  
+        <v-toolbar-title  class="text-center flex-grow-1">Trail Sort</v-toolbar-title>
+        
+        <!-- Used to have it aligned next to menu button
         <v-spacer></v-spacer>
+        -->
+        
   
         <v-btn icon>
           <v-icon>mdi-magnify</v-icon>
