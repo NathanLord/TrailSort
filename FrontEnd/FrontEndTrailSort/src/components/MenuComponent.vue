@@ -6,7 +6,7 @@
   const items = [
     { title: 'Home', icon: 'mdi-home', route: '/' },
     { title: 'About', icon: 'mdi-information', route: '/about' },
-    { title: 'Contact', icon: 'mdi-phone', route: '/' },
+    { title: 'Sort', icon: 'mdi-file-document-arrow-right ', route: '/sort' },
   ]
 </script>
 
@@ -35,7 +35,7 @@
         </v-btn>
       </v-app-bar>
   
-      <v-navigation-drawer v-model="drawer" app>
+      <v-navigation-drawer v-model="drawer" app color="background">
         <v-list>
           <v-list-item v-for="(item, index) in items" :key="index">
 
@@ -80,6 +80,17 @@
   .router-link-exact-active{
     color: rgb(var(--v-theme-orangeDarken1)); /* https://stackoverflow.com/questions/48280990/using-custom-theming-in-vuetify-and-pass-color-variables-to-components */
   }
+
+  .v-btn--variant-elevated, 
+  .v-btn--variant-flat {
+    background: rgb(var(--v-theme-background)) !important;
+  }
+
+  .v-list-item--active .v-btn--variant-elevated,
+  .v-list-item--active .v-btn--variant-flat {
+    color: rgb(var(--v-theme-orangeDarken1));
+  }
+    
 
 </style>
   
