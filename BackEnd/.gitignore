@@ -1,2 +1,6 @@
 # Virtual Environment
 venv/
+
+# Zip file processing
+/uploads/*
+/processed/*

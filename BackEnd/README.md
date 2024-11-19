@@ -16,7 +16,14 @@
 ## Install TensorFlow
 ```pip install tensorflow```
 
+# Install Cors
+```pip install flask-cors```
 
 ## Create Requirements
 ```pip freeze > requirements.txt```
 
+
+
+# Create Folders to handle uploads
+
+Create two folders called "uploads" and "processed"
