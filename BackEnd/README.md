@@ -19,6 +19,10 @@
 # Install Cors
 ```pip install flask-cors```
 
+# Install dotenv so flask can see the .env file
+```pip install python-dotenv```
+
+
 ## Create Requirements
 ```pip freeze > requirements.txt```
 
@@ -27,3 +31,11 @@
 # Create Folders to handle uploads
 
 Create two folders called "uploads" and "processed"
+
+# Make a '.env' file in your root of the backend 
+
+This will hold where the location where you put your zip file that gets sent to the front end is. 
+Example:
+```
+PROCESSED_FOLDER=C:/Users/bob/Documents/thisCoolProject/BackEnd/processed
+```

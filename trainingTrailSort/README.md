@@ -1,3 +1,6 @@
+
+## Set up virtual environment for the Jupyter notebook
+
 python -m venv venv
 
 .\venv\Scripts\activate

@@ -7,3 +7,7 @@ venv/
 
 # pycache
 __pycache__/
+
+# env file
+.env
+
