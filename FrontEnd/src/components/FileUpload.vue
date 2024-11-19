@@ -12,6 +12,8 @@
             :loading="isLoading"
             :disabled="isLoading"
         />
+
+
         <v-btn 
             @click="uploadFile" 
             color="orangeDarken2" 
@@ -20,6 +22,17 @@
         >
             Upload
         </v-btn>
+
+        <v-btn
+            v-if= "downloadUrl"
+            @click = "downloadFile"
+            color = orangeDarken2
+        >
+            Download
+        </v-btn>
+
+
+
     </v-container>
 </template>
   
@@ -29,6 +42,8 @@
 
     const file = ref(null);
     const isLoading = ref(false);
+    const downloadUrl = ref(null);
+    const filename = ref('');
 
     const onFileChange = () => {
         console.log("Selected file:", file.value);
@@ -59,7 +74,7 @@
             // Get filename from Content-Disposition header if available
             const contentDisposition = response.headers.get('Content-Disposition');
             const filenameMatch = contentDisposition && contentDisposition.match(/filename="?([^"]*)"?/);
-            const filename = filenameMatch ? filenameMatch[1] : 'sorted_images.zip';
+            filename.value = filenameMatch ? filenameMatch[1] : 'sorted_images.zip';
 
             // Handle ZIP file download
             const blob = await response.blob();
@@ -69,18 +84,7 @@
                 throw new Error('Received empty file from server');
             }
 
-            const downloadUrl = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = filename;
-            
-            // Trigger download
-            document.body.appendChild(link);
-            link.click();
-            
-            // Cleanup
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(downloadUrl);
+            downloadUrl.value = window.URL.createObjectURL(blob);;
             
             // Reset file input
             file.value = null;
@@ -93,6 +97,24 @@
         }
 
     };
+
+
+    // https://stackoverflow.com/questions/54771261/trying-to-send-a-zip-from-the-backend-to-the-frontend
+    const downloadFile = () => {
+        if (downloadUrl.value) {
+            const link = document.createElement('a');
+            link.href = downloadUrl.value;
+            link.download = filename.value;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Revoke object URL to free memory
+            window.URL.revokeObjectURL(downloadUrl.value);
+            downloadUrl.value = null; // hide button
+        }
+    };
+
 </script>
   
 <style scoped>

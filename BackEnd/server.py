@@ -1,89 +1,6 @@
-from flask import Flask, request, send_file, jsonify
-from flask_cors import CORS
-import os
-import zipfile
-import shutil
-import logging
-
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-# Set the upload and processing folders
-UPLOAD_FOLDER = 'uploads'
-PROCESSED_FOLDER = 'processed'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs(PROCESSED_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-@app.route('/sort', methods=['POST'])
-def upload_file():
-    try:
-        if 'file' not in request.files:
-            logger.error("No file part in the request")
-            return jsonify({"error": "No file part"}), 400
-
-        file = request.files['file']
-        
-        if file.filename == '':
-            logger.error("No selected file")
-            return jsonify({"error": "No selected file"}), 400
-
-        if file and file.filename.endswith('.zip'):
-            # Save the uploaded ZIP file
-            zip_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            file.save(zip_path)
-            logger.info(f"File saved successfully at {zip_path}")
-
-            # Extract the ZIP file
-            extract_folder = os.path.join(UPLOAD_FOLDER, "extracted")
-            os.makedirs(extract_folder, exist_ok=True)
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(extract_folder)
-            logger.info(f"File extracted to {extract_folder}")
-
-            # Process the images (example: simply move them to a new folder)
-            output_folder = os.path.join(PROCESSED_FOLDER, "processed_images")
-            os.makedirs(output_folder, exist_ok=True)
-            for root, _, files in os.walk(extract_folder):
-                for file_name in files:
-                    if file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
-                        src_path = os.path.join(root, file_name)
-                        dst_path = os.path.join(output_folder, file_name)
-                        shutil.copy(src_path, dst_path)
-            logger.info(f"Images processed and moved to {output_folder}")
-
-            # Re-zip the processed images
-            output_zip_path = os.path.join(PROCESSED_FOLDER, 'processed_images.zip')
-            with zipfile.ZipFile(output_zip_path, 'w') as zipf:
-                for root, _, files in os.walk(output_folder):
-                    for file_name in files:
-                        file_path = os.path.join(root, file_name)
-                        zipf.write(file_path, arcname=os.path.relpath(file_path, output_folder))
-            logger.info(f"Processed images zipped at {output_zip_path}")
-
-            # Clean up extracted folder
-            shutil.rmtree(extract_folder)
-            logger.info(f"Temporary files cleaned up")
-
-            # Send the processed ZIP file back to the frontend
-            return send_file(output_zip_path, as_attachment=True)
-
-        logger.error("Invalid file type, only ZIP files are allowed")
-        return jsonify({"error": "Invalid file type, only ZIP files are allowed"}), 400
-
-    except Exception as e:
-        logger.error(f"Error during file processing: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 
-""" ----------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 import os
@@ -236,4 +153,3 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-"""

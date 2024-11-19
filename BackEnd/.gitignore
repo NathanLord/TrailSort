@@ -4,3 +4,6 @@ venv/
 # Zip file processing
 /uploads/*
 /processed/*
+
+# pycache
+__pycache__/
