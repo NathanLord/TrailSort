@@ -60,6 +60,7 @@ def process_file_upload(file):
     zip_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(zip_path)
 
+    # Extract the zip file
     extract_folder = os.path.join(UPLOAD_FOLDER, "extracted")
     os.makedirs(extract_folder, exist_ok=True)
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:

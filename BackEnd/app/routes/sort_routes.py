@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 @bp.route('/sort', methods=['POST'])
 def upload_file():
     try:
+
+        # Check if a file was uploaded
         if 'file' not in request.files:
             return jsonify({"error": "No file part"}), 400
-
+        # Get the uploaded file
         file = request.files['file']
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
