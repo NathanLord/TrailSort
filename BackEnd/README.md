@@ -1,14 +1,19 @@
-# Install Dependencies
-```pip install -r requirements.txt```
-
-<br><br> <br>
-
-
 ## Create a virtual environment
 ```python -m venv venv```
 
 ## Activate the virtual environment
 ```.\venv\Scripts\activate```
+
+### May need to temporarily bypass execution policy of power shell 
+
+Do this before trying to activate
+
+```Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process```
+
+<br><br> <br>
+
+# Install Dependencies
+```pip install -r requirements.txt```
 
 ## Install Flask
 ```pip install flask```
@@ -39,3 +44,7 @@ Example:
 ```
 PROCESSED_FOLDER=C:/Users/bob/Documents/thisCoolProject/BackEnd/processed
 ```
+
+# Run app
+
+```python app.py```
