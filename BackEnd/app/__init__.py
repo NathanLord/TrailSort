@@ -1,6 +1,6 @@
 from flask import Flask, after_this_request
 from flask_cors import CORS
-from app.routes import sort_routes
+from app.routes import sort_routes, user_routes
 import os
 import logging
 from dotenv import load_dotenv
@@ -16,6 +16,7 @@ def create_app():
 
     # Add blueprints for different routes
     app.register_blueprint(sort_routes.bp)
+    app.register_blueprint(user_routes.bp)
 
     processed_folder = os.getenv("PROCESSED_FOLDER")
     logger.info(f"Processed folder path: {processed_folder}")

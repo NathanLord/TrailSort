@@ -61,7 +61,6 @@
             const response = await fetch(`${backendUrl}/sort`, {
                 method: 'POST',
                 body: formData,
-                //credentials: 'include',
             });
             
 

@@ -8,7 +8,7 @@
     <menuComponent>
       <router-view v-slot="{ Component }">
         <transition name="slide" mode="out-in"> <!-- https://www.youtube.com/watch?v=pG5pwDGc3D4-->
-          <component :is="Component" />
+          <component :is="Component"/>
         </transition>
       </router-view>
     </menuComponent>
