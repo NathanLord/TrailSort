@@ -4,13 +4,20 @@ from app.routes import sort_routes, user_routes
 import os
 import logging
 from dotenv import load_dotenv
+from app.extensions import db
+from app.config import Config
 
 load_dotenv()
+
 
 def create_app():
     app = Flask(__name__)
     CORS(app, resources={r"/*": {"origins": "*"}})
-    app.config.from_object('app.config')
+
+    app.config.from_object(Config)
+
+    # Start db
+    db.init_app(app)
 
     logger = logging.getLogger(__name__)
 

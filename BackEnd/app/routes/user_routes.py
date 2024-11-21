@@ -11,8 +11,9 @@ logger = logging.getLogger(__name__)
 def user_signup():
     try:
 
-        username = request.form.get('username')
-        password = request.form.get('password')
+        data = request.get_json() 
+        username = data.get('username') 
+        password = data.get('password')
 
         logger.info(f"Received form data: username={username}, password={password}")
 

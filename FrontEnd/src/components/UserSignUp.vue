@@ -57,6 +57,7 @@ const signup = async () => {
         errorMessage.value = 'Please fill out all fields.';
         return;
     }
+    console.log(username.value);
 
     try {
     const response = await fetch(`${backendUrl}/user/signup`, {

@@ -60,7 +60,7 @@ def process_file_upload(file):
     zip_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(zip_path)
 
-    # Extract the zip file
+    # Extract the zip file https://www.geeksforgeeks.org/unzipping-files-in-python/
     extract_folder = os.path.join(UPLOAD_FOLDER, "extracted")
     os.makedirs(extract_folder, exist_ok=True)
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
@@ -73,7 +73,7 @@ def process_file_upload(file):
     # Sort images based on TensorFlow model predictions
     sort_images(extract_folder, output_folder)
 
-    # Create a zip file of the sorted images
+    # Create a zip file of the sorted images https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
     output_zip_path = os.path.join(PROCESSED_FOLDER, 'processed_images.zip')
     with zipfile.ZipFile(output_zip_path, 'w') as zipf:
         for root, _, files in os.walk(output_folder):
