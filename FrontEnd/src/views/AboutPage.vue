@@ -1,7 +1,3 @@
-<script setup>
-import TensorFlowJupyter from '../components/TensorFlowJupyter.vue';
-</script>
-
 <template>
     <div>
         <h1>About Us</h1>
@@ -10,6 +6,11 @@ import TensorFlowJupyter from '../components/TensorFlowJupyter.vue';
         <TensorFlowJupyter></TensorFlowJupyter>
     </div>
 </template>
+
+
+<script setup>
+    import TensorFlowJupyter from '../components/TensorFlowJupyter.vue';
+</script>
   
 
   

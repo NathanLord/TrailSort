@@ -6,10 +6,10 @@ import SortPage from '../views/SortPage.vue'
 import UserPage from '../views/UserPage.vue'
 
 const routes = [
-  { path: '/', component: HomePage },
-  { path: '/about', component: AboutPage },
-  { path: '/sort', component: SortPage },
-  { path: '/user', component: UserPage },
+  { path: '/', component: HomePage, name: 'homePage' },
+  { path: '/about', component: AboutPage, name: 'aboutPage' },
+  { path: '/sort', component: SortPage, name: 'sortPage' },
+  { path: '/user', component: UserPage, name: 'userPage' },
 ]
 
 const router = createRouter({

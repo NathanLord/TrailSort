@@ -3,14 +3,13 @@
 <template>
   <div class="full-height">
     <v-container>
-      <v-row class="d-flex justify-center" style="height: 100vh;">
+      <v-row class="d-flex justify-center" style="min-height: 100vh;">
         <v-col cols="12" md="6" lg="4">
-
-
-          <v-card  v-if="!isAuthenticated">
+          <v-card v-if="!isAuthenticated">
             <v-toolbar color="orange darken-2">
               <v-toolbar-title>{{ isSignUp ? "Sign Up Form" : "Login Form" }}</v-toolbar-title>
             </v-toolbar>
+
             <v-card-text>
               <v-form>
                 <v-text-field
@@ -29,9 +28,13 @@
                   v-model="password"
                 ></v-text-field>
               </v-form>
+
+              <!-- Error Message (Login/Signup Failure) -->
+              <v-alert v-if="errorMessage" type="error" dismissible>{{ errorMessage }}</v-alert>
             </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
+
+            <!-- Main Action Button (Login/Signup) -->
+            <v-card-actions class="d-flex justify-center">
               <v-btn
                 color="orange darken-2"
                 @click="isSignUp ? signup() : login()"
@@ -39,22 +42,23 @@
               >
                 {{ isSignUp ? "Sign Up" : "Login" }}
               </v-btn>
+            </v-card-actions>
+
+            <!-- Below Action Buttons (Toggle between SignUp/Login) -->
+            <v-card-actions class="d-flex justify-center mt-3">
               <v-btn text @click="toggleForm">
                 {{ isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up" }}
               </v-btn>
             </v-card-actions>
           </v-card>
 
+          <!-- Welcome Message (For Authenticated Users) -->
           <v-card v-else>
-            <v-card-title>
-              Welcome, you are logged in!
-            </v-card-title>
-            <v-card-actions>
+            <v-card-title>Welcome, you are logged in!</v-card-title>
+            <v-card-actions class="d-flex justify-center">
               <v-btn color="red darken-2" @click="logout">Sign Out</v-btn>
             </v-card-actions>
           </v-card>
-
-
         </v-col>
       </v-row>
     </v-container>
@@ -75,49 +79,57 @@ const isAuthenticated = ref(!!localStorage.getItem('token'));
 
 
 const toggleForm = () => {
-    isSignUp.value = !isSignUp.value;
+  username.value = '';
+  password.value = '';
+  isSignUp.value = !isSignUp.value;
 };
 
 const signup = async () => {
 
-    isLoading.value = true;
-    if (!username.value || !password.value) {
-        errorMessage.value = 'Please fill out all fields.';
-        return;
-    }
-    console.log(username.value);
+  isLoading.value = true;
+  errorMessage.value = '';
 
-    try {
-    const response = await fetch(`${backendUrl}/user/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-        }),
-    });
+  if (!username.value || !password.value) {
+      errorMessage.value = 'Please fill out all fields.';
+      return;
+  }
+  console.log(username.value);
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error('SignUp error:', errorData);
-        throw new Error(errorData.error || 'SignUp failed');
-    }
+  try {
+  const response = await fetch(`${backendUrl}/user/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+      username: username.value,
+      password: password.value,
+      }),
+  });
 
-    const data = await response.json();
-    console.log('SignUp successful:', data);
+  if (!response.ok) {
+      const errorData = await response.json();
+      console.error('SignUp error:', errorData);
+      throw new Error(errorData.error || 'SignUp failed');
+  }
 
-
-    } catch (error) {
-        console.error('Error SignUp in:', error);
-        errorMessage.value = error.message || 'An error occurred during SignUp.';
-    } finally {
-        isLoading.value = false;
-    }
-};
+  const data = await response.json();
+  console.log('SignUp successful:', data);
+  isSignUp.value = false;
+  username.value = '';
+  password.value = '';
 
 
-const login = async () => {
+  } catch (error) {
+      console.error('Error SignUp in:', error);
+      errorMessage.value = error.message || 'An error occurred during SignUp.';
+  } finally {
+      isLoading.value = false;
+  }
+  };
 
+
+  const login = async () => {
+
+  errorMessage.value = '';
   console.log('Login', { username: username.value, password: password.value });
 
   isLoading.value = true;
@@ -150,11 +162,13 @@ const login = async () => {
     localStorage.setItem('token', data.token);
     console.log('Login successful:', data);
     isAuthenticated.value = true;
+    username.value = '';
+    password.value = '';
   } else {
     throw new Error('Token not received');
   }
 
-  
+
 
 
   } catch (error) {

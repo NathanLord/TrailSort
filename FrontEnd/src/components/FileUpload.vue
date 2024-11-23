@@ -12,7 +12,10 @@
             :loading="isLoading"
             :disabled="isLoading"
         />
-
+        <!-- https://vuetifyjs.com/en/components/alerts/#icon-->
+        <v-alert v-if="showError" type="error" dismissible v-model:show="showError">
+            {{ errorMessage }}
+        </v-alert>
 
         <v-btn 
             @click="uploadFile" 
@@ -38,12 +41,17 @@
   
 <script setup>
     import { ref } from 'vue';
+    import { useRouter } from 'vue-router'; // Import useRouter
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const router = useRouter(); // Initialize router
 
     const file = ref(null);
     const isLoading = ref(false);
     const downloadUrl = ref(null);
     const filename = ref('');
+    const errorMessage = ref('');
+    const showError = ref(false);
 
     const onFileChange = () => {
         console.log("Selected file:", file.value);
@@ -53,6 +61,8 @@
         if (!file.value) return;
 
         isLoading.value = true;
+        errorMessage.value = '';
+        showError.value = false;
 
         const formData = new FormData();
         formData.append('file', file.value);
@@ -60,6 +70,14 @@
         // Retrieve the token from localStorage
         const token = localStorage.getItem('token');
         console.log(token);
+
+
+        // Check if token is null and redirect to userPage (SignUp)
+        if (!token) {
+            // If no token, redirect to the userPage view for sign-up
+            router.push({ name: 'userPage' }); // Change 'userPage' to the actual name of the route
+            return; // Exit the function
+        }
 
         try {
             const response = await fetch(`${backendUrl}/sort`, {
@@ -74,7 +92,8 @@
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Server error:", errorData);
-                throw new Error(errorData.error || 'Upload failed');
+                errorMessage.value = errorData.message || JSON.stringify(errorData) || 'Upload failed';
+                throw new Error(errorMessage.value || 'Upload failed');
             }
 
             // Get filename from Content-Disposition header if available
@@ -98,6 +117,8 @@
 
         } catch (error) {
             console.error("Error uploading file:", error);
+            errorMessage.value = error.message || 'An error occurred during the file upload.';
+            showError.value = true;
         } finally {
             isLoading.value = false;
         }
