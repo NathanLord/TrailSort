@@ -30,6 +30,10 @@ Do this before trying to activate
 # Install tools for PostgreSQL connection
 ```pip install psycopg2-binary Flask-SQLAlchemy```
 
+# Install for JWT
+```pip install PyJWT```
+
+
 
 ## Create Requirements
 ```pip freeze > requirements.txt```
@@ -49,6 +53,8 @@ Example:
 PROCESSED_FOLDER=C:/Users/bob/Documents/thisCoolProject/BackEnd/processed
 
 DATABASE_URL=postgresql://username:password@localhost:5432/your_database_name
+
+SECRET_KEY=whatever your secret key is
 
 ```
 

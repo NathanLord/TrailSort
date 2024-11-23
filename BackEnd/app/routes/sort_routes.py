@@ -2,13 +2,15 @@ from flask import Blueprint, request, jsonify, send_file
 import os
 from app.controllers.sort_controller import process_file_upload
 import logging
+from app.utils.jwt_decorator import token_required
 
 bp = Blueprint('sort_routes', __name__)
 
 logger = logging.getLogger(__name__)
 
 @bp.route('/sort', methods=['POST'])
-def upload_file():
+@token_required
+def upload_file(public_id):
     try:
 
         # Check if a file was uploaded

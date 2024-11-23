@@ -1,17 +1,23 @@
+from flask import Flask, request, jsonify, make_response
 import logging
 import psycopg2
 from psycopg2 import sql
 from app.extensions import db  # db in extensions
 from sqlalchemy.engine.url import make_url
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+from datetime import datetime, timedelta, timezone
+
+from app.config import Config  
+JWT_SECRET_KEY = Config.JWT_SECRET_KEY
 
 
 logger = logging.getLogger(__name__)
 
-# https://www.geeksforgeeks.org/making-a-flask-app-using-a-postgresql-database/
-# https://www.geeksforgeeks.org/using-jwt-for-user-authentication-in-flask/
 
-def signup_user(username, password):
+# https://www.geeksforgeeks.org/using-jwt-for-user-authentication-in-flask/ 
+
+def login_user(username, password):
     conn = None # conn is the connection to the db
     cur = None # cur is the cursor which is based off of the connection. It alllows you to execute sql commands
     try:
@@ -19,16 +25,11 @@ def signup_user(username, password):
         if not username or not password:
             raise ValueError("Username and password are required.")
         
-        hashed_password = generate_password_hash(password)
-
-        # The environment passowrd would continue to fail even tho there is no difference to the hardcoded one and the environment one.
-        #database_url = str(db.engine.url)
-        #print(f"Database URL: {database_url}")
-
         # work around
         # https://docs.sqlalchemy.org/en/20/core/engines.html
         database_url_obj = make_url(db.engine.url) 
         database_url = f"postgresql://{database_url_obj.username}:{database_url_obj.password}@{database_url_obj.host}:{database_url_obj.port}/{database_url_obj.database}"
+        
 
         conn = psycopg2.connect(database_url)
         cur = conn.cursor()
@@ -36,29 +37,34 @@ def signup_user(username, password):
         # Check db for user
         query_check = sql.SQL("SELECT * FROM users WHERE username = %s")
         cur.execute(query_check, (username,))
-        result = cur.fetchone()
+        user = cur.fetchone()
 
-        if result:
-            raise ValueError("Username already exists")
+        if not user:
+            raise ValueError("User does not exist")
 
-        # Insert
-        query_insert = sql.SQL("INSERT INTO users (username, password) VALUES (%s, %s)")
-        cur.execute(query_insert, (username, hashed_password))
+        stored_password_hash = user[2]  # third column in db is password
+        
+        # Check if the provided password matches the stored hash
+        if check_password_hash(stored_password_hash, password):
+            token = jwt.encode({
+                'public_id': user[0],  # UserID is the first column in db
+                'exp': datetime.now(timezone.utc) + timedelta(minutes=30)  # Expiration time
+            }, JWT_SECRET_KEY, algorithm='HS256')  
 
-        conn.commit()  # Save
+            return {'token': token}
 
-        return {"message": "User created successfully", "username": username}
-    
+        else:
+            return {'error': 'Invalid password'}, 400
+        
     except ValueError as ve:
-        logger.error(f"Signup error: {ve}")
-        return {"error": str(ve)} 
+        logger.error(f"Login error: {ve}")
+        return {"error": str(ve)}  
     except Exception as e:
-        if conn:
-            conn.rollback()  # Revert changes in case of error
-        logger.error(f"Error during user signup: {e}")
-        return {"error": str(e)}, 500
+        return {"error": str(e)}, 500  
+
     finally:
         if cur:
             cur.close()
         if conn:
             conn.close()
+

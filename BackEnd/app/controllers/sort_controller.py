@@ -8,6 +8,7 @@ from tensorflow.keras.models import load_model
 from app.config import UPLOAD_FOLDER, PROCESSED_FOLDER
 import logging
 
+
 logger = logging.getLogger(__name__)
 # Configure logging level and format
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

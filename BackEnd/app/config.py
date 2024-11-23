@@ -16,3 +16,4 @@ class Config:
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB limit
     SQLALCHEMY_TRACK_MODIFICATIONS = False  
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    JWT_SECRET_KEY = os.getenv("SECRET_KEY")

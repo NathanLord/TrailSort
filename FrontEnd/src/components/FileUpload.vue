@@ -57,9 +57,16 @@
         const formData = new FormData();
         formData.append('file', file.value);
 
+        // Retrieve the token from localStorage
+        const token = localStorage.getItem('token');
+        console.log(token);
+
         try {
             const response = await fetch(`${backendUrl}/sort`, {
                 method: 'POST',
+                headers: {
+                'Authorization': `Bearer ${token}`, // Include the JWT token in the Authorization header
+                },
                 body: formData,
             });
             
