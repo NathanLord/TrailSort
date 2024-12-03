@@ -18,15 +18,15 @@ def token_required(f):
             else:
                 return jsonify({'message': 'Token is missing or malformed !!'}), 401
 
-        # Return 401 if token is not passed
+        # Token is not passed
         if not token:
             return jsonify({'message': 'Token is missing !!'}), 401
 
         try:
             # Decode the token using the secret key
             data = jwt.decode(token, JWT_SECRET_KEY, algorithms=["HS256"])
-            public_id = data['public_id']  # Assuming the public_id is part of the payload
-            # You can use this public_id to access user-specific data in your application, if needed
+            public_id = data['public_id']  # public_id is an argument
+
 
         except jwt.ExpiredSignatureError:
             return jsonify({'message': 'Token has expired !!'}), 401
@@ -35,7 +35,7 @@ def token_required(f):
         except Exception as e:
             return jsonify({'message': str(e)}), 401
 
-        # Pass the current user object to the route function
+        # Pass object to the route function
         return f(public_id, *args, **kwargs)
 
     return decorated
