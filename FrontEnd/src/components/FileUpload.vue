@@ -2,6 +2,10 @@
 <template>
     <h2>File Upload</h2>
     <v-container>
+
+        <ModelSelect ref="modelSelect" />
+
+
         <v-file-input
             label="Upload Trail Camera Photos"
             variant="solo-inverted"
@@ -40,8 +44,11 @@
 </template>
   
 <script setup>
+
     import { ref } from 'vue';
     import { useRouter } from 'vue-router'; // Import useRouter
+    import ModelSelect from './ModelSelect.vue';
+
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const router = useRouter(); // Initialize router
@@ -52,6 +59,9 @@
     const filename = ref('');
     const errorMessage = ref('');
     const showError = ref(false);
+
+    const modelSelect = ref(null);
+
 
     const onFileChange = () => {
         console.log("Selected file:", file.value);
@@ -67,16 +77,22 @@
         const formData = new FormData();
         formData.append('file', file.value);
 
+        const backend = modelSelect.value?.selectedBackEnd;
+        console.log("Selected Model", backend);
+        if (backend) {
+            formData.append('model_type', backend);
+        }
+
         // Retrieve the token from localStorage
         const token = localStorage.getItem('token');
-        console.log(token);
+        //console.log(token);
 
 
-        // Check if token is null and redirect to userPage (SignUp)
+        // Check if token is null and redirect to userPage
         if (!token) {
-            // If no token, redirect to the userPage view for sign-up
-            router.push({ name: 'userPage' }); // Change 'userPage' to the actual name of the route
-            return; // Exit the function
+            // If no token, redirect to the UserPage view for sign-up
+            router.push({ name: 'userPage' }); 
+            return; // Exit
         }
 
         try {

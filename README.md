@@ -16,8 +16,9 @@ Uses Python with Flask
 
 ### trainingTrailSort
 
-Uses Jupyter Notebook to train a model that can be used to classify images.
+Uses TensorFlow Keras and Jupyter Notebook to train a model that can be used to classify images.
 
 ## Future
 
 Add more models to choose from: object detection, video detection model, etc...
+Add profile uitilization with users. Mail server for password reset.

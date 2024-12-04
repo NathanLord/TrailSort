@@ -3,7 +3,7 @@ import psycopg2
 from psycopg2 import sql
 from app.extensions import db  # db in extensions
 from sqlalchemy.engine.url import make_url
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 
 logger = logging.getLogger(__name__)

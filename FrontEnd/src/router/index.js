@@ -6,15 +6,15 @@ import SortPage from '../views/SortPage.vue'
 import UserPage from '../views/UserPage.vue'
 
 const routes = [
-  { path: '/', component: HomePage, name: 'homePage' },
-  { path: '/about', component: AboutPage, name: 'aboutPage' },
-  { path: '/sort', component: SortPage, name: 'sortPage' },
-  { path: '/user', component: UserPage, name: 'userPage' },
+    { path: '/', component: HomePage, name: 'homePage' },
+    { path: '/about', component: AboutPage, name: 'aboutPage' },
+    { path: '/sort', component: SortPage, name: 'sortPage' },
+    { path: '/user', component: UserPage, name: 'userPage' },
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes,
 })
 
 export default router

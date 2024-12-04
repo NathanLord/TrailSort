@@ -16,11 +16,11 @@ def token_required(f):
             if auth_header.startswith('Bearer '):
                 token = auth_header[7:]  # Remove 'Bearer ' part to get the token
             else:
-                return jsonify({'message': 'Token is missing or malformed !!'}), 401
+                return jsonify({'message': 'Token is missing or malformed. Try logining in'}), 401
 
         # Token is not passed
         if not token:
-            return jsonify({'message': 'Token is missing !!'}), 401
+            return jsonify({'message': 'Token is missing! Try logining in.'}), 401
 
         try:
             # Decode the token using the secret key
@@ -29,9 +29,9 @@ def token_required(f):
 
 
         except jwt.ExpiredSignatureError:
-            return jsonify({'message': 'Token has expired !!'}), 401
+            return jsonify({'message': 'Token has expired! Logout and Log back in.'}), 401
         except jwt.InvalidTokenError:
-            return jsonify({'message': 'Token is invalid !!'}), 401
+            return jsonify({'message': 'Token is invalid!'}), 401
         except Exception as e:
             return jsonify({'message': str(e)}), 401
 

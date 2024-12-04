@@ -1,41 +1,28 @@
 <template>
     <div>
-
         <v-container>
-            <!-- Select Dropdown -->
-            <v-select
-                v-model="selectedSource"
-                :items="sources"
-                item-title="text" 
-                item-value="value" 
-                label="Select Model"
-                class="mb-4"
-                outlined
-            ></v-select>
+            
+            <ModelSelect ref="modelSelect" />
 
-            <!-- Iframe -->
             <iframe
-                :src="selectedSource"
+                :src="modelSelect?.selectedSource"
                 width="100%"
                 height="800px"
                 style="border: none"
             ></iframe>
+            
         </v-container>
-
     </div>
 </template>
 
 <script setup>
 
     import { ref } from 'vue';
+    import ModelSelect from './ModelSelect.vue';
 
-    const selectedSource = ref('/trail_sort_TF2_display.html');
+    const modelSelect = ref(null);
 
-    const sources = [
-        { text: 'Basic Model', value: '/trail_sort_TF2_display.html' },
-        { text: 'Larger Model', value: '/trail_sort_TF3Larger_display.html' },
-    ];
-
+    
 </script>
 
 <style scoped>

@@ -61,6 +61,7 @@
     { title: 'About', icon: 'mdi-information', route: '/about' },
     { title: 'Sort', icon: 'mdi-file-document-arrow-right ', route: '/sort' },
   ]
+  
 </script>
 
 

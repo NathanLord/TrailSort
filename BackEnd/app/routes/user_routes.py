@@ -43,7 +43,7 @@ def user_login():
 
         results = login_user(username, password)
 
-        # return results if error
+        # return results if error. Need to check for this because I send the code from the controller in this route.
         if isinstance(results, tuple):  # If the result is a tuple (data, status)
             return jsonify(results[0]), results[1]  
 
