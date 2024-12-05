@@ -3,7 +3,6 @@ import zipfile
 import shutil
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 from app.config import UPLOAD_FOLDER, PROCESSED_FOLDER
 import logging
@@ -21,6 +20,7 @@ class_names = ["blackBear", "coyote", "ruffedGrouse", "turkey", "whitetailDeer"]
 
 # Function to sort images based on model predictions
 def sort_images(extracted_folder, output_folder, model, target_size):
+    
     # Create subfolders in the processed folder for each class
     for class_name in class_names:
         logger.debug(f"Class name:  {class_name}")
@@ -74,9 +74,11 @@ def process_file_upload(file, model_type):
     if model_type == 'trailSortTF2MorePixels.keras':
         img_height = 256
         img_width = 256
+
     else:
         img_height = 180
         img_width = 180
+
     target_size = (img_height, img_width)
 
 

@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, make_response
 import logging
+
 import psycopg2
 from psycopg2 import sql
 from app.extensions import db  # db in extensions
 from sqlalchemy.engine.url import make_url
+
 from werkzeug.security import check_password_hash
 import jwt
 from datetime import datetime, timedelta, timezone
@@ -14,12 +15,14 @@ JWT_SECRET_KEY = Config.JWT_SECRET_KEY
 
 logger = logging.getLogger(__name__)
 
-
+# https://www.geeksforgeeks.org/making-a-flask-app-using-a-postgresql-database/
 # https://www.geeksforgeeks.org/using-jwt-for-user-authentication-in-flask/ 
 
 def login_user(username, password):
+
     conn = None # conn is the connection to the db
     cur = None # cur is the cursor which is based off of the connection. It alllows you to execute sql commands
+
     try:
 
         if not username or not password:
@@ -54,11 +57,13 @@ def login_user(username, password):
             return {'token': token}
 
         else:
-            return {'error': 'Invalid password'}, 400
+
+            return {'error': 'Invalid password'}
         
     except ValueError as ve:
         logger.error(f"Login error: {ve}")
         return {"error": str(ve)}  
+    
     except Exception as e:
         return {"error": str(e)}, 500  
 
