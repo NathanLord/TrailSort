@@ -640,4 +640,190 @@ print(
     .format(class_names[np.argmax(score)], 100 * np.max(score))
 )
 
+# %% [markdown]
+# ## More epochs and layers.
+
+# %%
+num_classes = len(class_names)
+
+from tensorflow.keras import regularizers
+
+model = Sequential([
+    data_augmentation,
+    layers.Rescaling(1./255),
+    layers.Conv2D(16, 3, padding='same', activation='relu', kernel_regularizer=regularizers.L2(0.001)),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
+    layers.Conv2D(32, 3, padding='same', activation='relu', kernel_regularizer=regularizers.L2(0.001)),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
+    layers.Conv2D(64, 3, padding='same', activation='relu', kernel_regularizer=regularizers.L2(0.001)),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
+    layers.Conv2D(128, 3, padding='same', activation='relu', kernel_regularizer=regularizers.L2(0.001)),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D(),
+    layers.Dropout(0.4),
+    layers.Flatten(),
+    layers.Dense(128, activation='relu', kernel_regularizer=regularizers.L2(0.001)),
+    layers.Dropout(0.5),  
+    layers.Dense(num_classes, activation='softmax') 
+])
+
+
+
+# %%
+model.compile(
+    optimizer='adam',
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(),  # Default is from_logits=False
+    metrics=['accuracy']
+)
+
+
+# %%
+model.summary()
+
+# %%
+epochs = 20
+history = model.fit(
+  train_ds,
+  validation_data=val_ds,
+  epochs=epochs
+)
+
+# %% [markdown]
+# Epoch 1/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 780s 466ms/step - accuracy: 0.2147 - loss: 2.2508 - val_accuracy: 0.2081 - val_loss: 1.7895
+# 
+# Epoch 2/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 476s 405ms/step - accuracy: 0.2139 - loss: 1.7518 - val_accuracy: 0.2082 - val_loss: 1.6637
+# 
+# Epoch 3/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 464s 395ms/step - accuracy: 0.2115 - loss: 1.6555 - val_accuracy: 0.2082 - val_loss: 1.7498
+# 
+# Epoch 4/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 463s 394ms/step - accuracy: 0.2131 - loss: 1.6911 - val_accuracy: 0.2159 - val_loss: 1.6138
+# 
+# Epoch 5/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 467s 398ms/step - accuracy: 0.2099 - loss: 1.6829 - val_accuracy: 0.2082 - val_loss: 1.6576
+# 
+# Epoch 6/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 466s 396ms/step - accuracy: 0.2125 - loss: 1.6380 - val_accuracy: 0.2159 - val_loss: 1.6082
+# 
+# Epoch 7/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 461s 392ms/step - accuracy: 0.2100 - loss: 1.6082 - val_accuracy: 0.2141 - val_loss: 1.6014
+# 
+# Epoch 8/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 461s 392ms/step - accuracy: 0.2130 - loss: 1.6032 - val_accuracy: 0.2082 - val_loss: 1.6000
+# 
+# Epoch 9/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 463s 394ms/step - accuracy: 0.2093 - loss: 1.6022 - val_accuracy: 0.2082 - val_loss: 1.5993
+# 
+# Epoch 10/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 467s 397ms/step - accuracy: 0.2092 - loss: 1.6022 - val_accuracy: 0.2082 - val_loss: 1.5990
+# 
+# Epoch 11/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 459s 391ms/step - accuracy: 0.2156 - loss: 1.6017 - val_accuracy: 0.2082 - val_loss: 1.5990
+# 
+# Epoch 12/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 459s 391ms/step - accuracy: 0.2092 - loss: 1.6018 - val_accuracy: 0.2082 - val_loss: 1.5990
+# 
+# Epoch 13/20
+# 
+# ...
+# 
+# Epoch 19/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 464s 395ms/step - accuracy: 0.2141 - loss: 1.6020 - val_accuracy: 0.2082 - val_loss: 1.5990
+# 
+# Epoch 20/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 450s 383ms/step - accuracy: 0.2195 - loss: 1.6022 - val_accuracy: 0.2159 - val_loss: 1.5989
+
+# %% [markdown]
+# ### Back to the one with the best results but keeping the epochs increased.
+
+# %%
+num_classes = len(class_names)
+
+from tensorflow.keras import regularizers
+
+model = Sequential([
+    data_augmentation,
+    layers.Rescaling(1./255),
+    layers.Conv2D(16, 3, padding='same', activation='relu', 
+                  kernel_regularizer=regularizers.L2(0.001)),  # L2 regularization
+    layers.MaxPooling2D(),
+    layers.Conv2D(32, 3, padding='same', activation='relu', 
+                  kernel_regularizer=regularizers.L2(0.001)),  # L2 regularization
+    layers.MaxPooling2D(),
+    layers.Conv2D(64, 3, padding='same', activation='relu', 
+                  kernel_regularizer=regularizers.L2(0.001)),  # L2 regularization
+    layers.MaxPooling2D(),
+    layers.Dropout(0.4),
+    layers.Flatten(),
+    layers.Dense(128, activation='relu', 
+                 kernel_regularizer=regularizers.L2(0.001)),  # L2 regularization
+    layers.Dense(num_classes, name="outputs")  # Output layer, no regularization
+])
+
+
+# %%
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+# %%
+epochs = 20
+history = model.fit(
+  train_ds,
+  validation_data=val_ds,
+  epochs=epochs
+)
+
+# %% [markdown]
+# Epoch 1/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 202s 170ms/step - accuracy: 0.2848 - loss: 1.6369 - val_accuracy: 0.3595 - val_loss: 1.5152
+# 
+# Epoch 2/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 198s 169ms/step - accuracy: 0.3536 - loss: 1.5210 - val_accuracy: 0.3377 - val_loss: 1.5529
+# 
+# Epoch 3/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 197s 168ms/step - accuracy: 0.3662 - loss: 1.4993 - val_accuracy: 0.3662 - val_loss: 1.5125
+# 
+# Epoch 4/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 192s 163ms/step - accuracy: 0.3777 - loss: 1.4879 - val_accuracy: 0.3939 - val_loss: 1.4620
+# 
+# Epoch 5/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 191s 163ms/step - accuracy: 0.3847 - loss: 1.4723 - val_accuracy: 0.4111 - val_loss: 1.4450
+# 
+# Epoch 6/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 195s 166ms/step - accuracy: 0.4034 - loss: 1.4591 - val_accuracy: 0.3999 - val_loss: 1.4468
+# 
+# Epoch 7/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 192s 164ms/step - accuracy: 0.4007 - loss: 1.4603 - val_accuracy: 0.3943 - val_loss: 1.4716
+# 
+# Epoch 8/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 191s 162ms/step - accuracy: 0.4028 - loss: 1.4580 - val_accuracy: 0.3746 - val_loss: 1.5193
+# 
+# Epoch 9/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 190s 162ms/step - accuracy: 0.4116 - loss: 1.4508 - val_accuracy: 0.4259 - val_loss: 1.4287
+# 
+# Epoch 10/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 190s 162ms/step - accuracy: 0.4086 - loss: 1.4536 - val_accuracy: 0.4327 - val_loss: 1.4156
+# 
+# Epoch 11/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 190s 161ms/step - accuracy: 0.4185 - loss: 1.4441 - val_accuracy: 0.4314 - val_loss: 1.4126
+# 
+# Epoch 12/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 191s 163ms/step - accuracy: 0.4091 - loss: 1.4481 - val_accuracy: 0.4168 - val_loss: 1.4514
+# 
+# Epoch 13/20
+# 
+# ...
+# 
+# Epoch 19/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 193s 164ms/step - accuracy: 0.4310 - loss: 1.4277 - val_accuracy: 0.4152 - val_loss: 1.4508
+# 
+# Epoch 20/20
+# 1175/1175 ━━━━━━━━━━━━━━━━━━━━ 193s 164ms/step - accuracy: 0.4242 - loss: 1.4312 - val_accuracy: 0.4350 - val_loss: 1.4066
+
 

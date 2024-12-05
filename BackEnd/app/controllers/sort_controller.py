@@ -15,19 +15,17 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 
 
-# Image classes and target size
+# Image classes
 class_names = ["blackBear", "coyote", "ruffedGrouse", "turkey", "whitetailDeer"]
-img_height = 180
-img_width = 180
-target_size = (img_height, img_width)
+
 
 # Function to sort images based on model predictions
-def sort_images(extracted_folder, output_folder, model):
+def sort_images(extracted_folder, output_folder, model, target_size):
     # Create subfolders in the processed folder for each class
     for class_name in class_names:
         logger.debug(f"Class name:  {class_name}")
         os.makedirs(os.path.join(output_folder, class_name), exist_ok=True)
-        logger.debug(f"Class name after:  {class_name}")
+        # logger.debug(f"Class name after:  {class_name}")
 
     # Process each image and predict its class
     for root, _, files in os.walk(extracted_folder):
@@ -61,7 +59,8 @@ def process_file_upload(file, model_type):
     # Dictionary for front-end to correspond to back-end models
     model_paths = {
         'trailSortTF2.keras': "model/trailSortTF2.keras",
-        'trailSortTF3Large.keras': "model/trailSortTF3Large.keras"
+        'trailSortTF3Large.keras': "model/trailSortTF3Large.keras",
+        'trailSortTF2MorePixels.keras': "model/trailSortTF2MorePixels.keras"
     }
 
     # Check if the model_type is in the model_paths dictionary
@@ -70,6 +69,15 @@ def process_file_upload(file, model_type):
 
     # Load the selected model based on the model_type
     model = load_model(model_paths[model_type])
+
+    # Set target size based selected model
+    if model_type == 'trailSortTF2MorePixels.keras':
+        img_height = 256
+        img_width = 256
+    else:
+        img_height = 180
+        img_width = 180
+    target_size = (img_height, img_width)
 
 
     zip_path = os.path.join(UPLOAD_FOLDER, file.filename)
@@ -86,7 +94,7 @@ def process_file_upload(file, model_type):
     os.makedirs(output_folder, exist_ok=True)
 
     # Sort images based on TensorFlow model predictions
-    sort_images(extract_folder, output_folder, model)
+    sort_images(extract_folder, output_folder, model, target_size)
 
     # Create a zip file of the sorted images https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
     output_zip_path = os.path.join(PROCESSED_FOLDER, 'processed_images.zip')

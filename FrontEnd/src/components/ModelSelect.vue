@@ -18,7 +18,9 @@
     const selectedSource = ref('/trail_sort_TF2_display.html');
     const sources = [
         { text: 'Basic Model', value: '/trail_sort_TF2_display.html', backEnd: 'trailSortTF2.keras' },
+        { text: 'Basic Model with more input layers', value: '/trail_sort_TF2MorePixels_display.html', backEnd: 'trailSortTF2MorePixels.keras' },
         { text: 'Larger Model', value: '/trail_sort_TF3Larger_display.html', backEnd: 'trailSortTF3Large.keras' },
+        
     ];
 
     // For defineExpose https://medium.com/@louis.young0420/leveraging-defineexpose-in-vue-3-empowering-component-communication-f4991c1bc997
