@@ -28,14 +28,14 @@ dist-ssr/
 .DS_Store
 Thumbs.db
 
-# Optional: Lockfiles (useful if you want reproducible builds, but ignore if you're fine without them)
+# Lockfiles 
 package-lock.json
 yarn.lock
 
 # Coverage directory used by testing tools
 coverage/
 
-# Output of ESLint/Prettier (if you're using them)
+# Output of ESLint/Prettier
 .eslintcache
 .prettiercache
 

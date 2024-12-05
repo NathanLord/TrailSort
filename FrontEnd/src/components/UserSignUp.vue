@@ -33,7 +33,7 @@
 														<v-alert v-if="errorMessage" type="error" dismissible>{{ errorMessage }}</v-alert>
 												</v-card-text>
 
-												<!-- Main Action Button (Login/Signup) -->
+												<!--Button for SignUp or Login -->
 												<v-card-actions class="d-flex justify-center">
 														<v-btn
 																color="orange darken-2"
@@ -52,7 +52,7 @@
 												</v-card-actions>
 										</v-card>
 
-										<!-- Welcome Message For User with JWT-->
+										<!-- Already logged in with JWT-->
 										<v-card v-else>
 												<v-card-title>Welcome, you are logged in!</v-card-title>
 												<v-card-actions class="d-flex justify-center">

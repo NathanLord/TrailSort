@@ -1,4 +1,6 @@
 <template>
+
+    <!-- https://vuetifyjs.com/en/components/selects/#usage -->
     <v-select
         v-model="selectedSource"
         :items="sources"
@@ -8,11 +10,12 @@
         class="mb-4"
         outlined
     ></v-select>
+
 </template>
 
 <script setup>
 
-    import { ref, defineExpose, computed } from 'vue';
+    import { ref, computed } from 'vue';
 
 
     const selectedSource = ref('/trail_sort_TF2_display.html');
