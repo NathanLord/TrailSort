@@ -22,7 +22,7 @@
         </v-alert>
 
         <v-btn 
-            @click="uploadFile" 
+            @click="uploadFile"
             color="orangeDarken2" 
             :loading="isLoading" 
             :disabled="!file || isLoading"

@@ -6,14 +6,6 @@
       <v-toolbar-title  class="text-center flex-grow-1">Trail Sort</v-toolbar-title>
       
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-bell</v-icon>
-      </v-btn>
-
       <router-link to="/user">
         <v-btn icon color="white">
           <v-icon>mdi-account-circle</v-icon>
