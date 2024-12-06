@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, send_file
-import os
-from app.controllers.sort_controller import process_file_upload
+
 import logging
+
+from app.controllers.sort_controller import process_file_upload
 from app.utils.jwt_decorator import token_required
 
 bp = Blueprint('sort_routes', __name__)
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 @bp.route('/sort', methods=['POST'])
 @token_required
 def upload_file(public_id):
+
     try:
 
         # Check if a file was uploaded
@@ -30,6 +32,7 @@ def upload_file(public_id):
         # Logic to send to the front end before deleting last zip file we made
         result_path = process_file_upload(file, model_type)
         sorted_folder = send_file(result_path, as_attachment=True)
+        
         return sorted_folder
 
     except Exception as e:

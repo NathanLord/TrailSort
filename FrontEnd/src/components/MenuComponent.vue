@@ -3,6 +3,7 @@
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
+
       <v-toolbar-title  class="text-center flex-grow-1">Trail Sort</v-toolbar-title>
       
 
@@ -11,6 +12,7 @@
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
       </router-link>
+      
 
     </v-app-bar>
 

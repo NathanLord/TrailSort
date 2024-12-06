@@ -1,12 +1,14 @@
 from flask import Blueprint, request, jsonify
-import os
+
 import logging
+
 from app.controllers.user_signup_controller import signup_user
 from app.controllers.user_login_controller import login_user
 
 bp = Blueprint('user_routes', __name__)
 
 logger = logging.getLogger(__name__)
+
 
 @bp.route('/user/signup', methods=['POST'])
 def user_signup():
@@ -43,9 +45,9 @@ def user_login():
 
         results = login_user(username, password)
 
-        # return results if error. Need to check for this because I send the code from the controller in this route.
-        if isinstance(results, tuple):  # If the result is a tuple (data, status)
-            return jsonify(results[0]), results[1]  
+        
+        if 'error' in results:
+            return jsonify({"error": results['error']}), 400
 
         # Return the token
         return jsonify(results), 200  # This will serialize the dictionary as JSON

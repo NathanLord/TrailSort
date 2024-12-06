@@ -3,9 +3,11 @@
     <h2>File Upload</h2>
     <v-container>
 
+
         <ModelSelect ref="modelSelect" />
 
 
+        <!-- https://vuetifyjs.com/en/components/file-inputs/#usage -->
         <v-file-input
             label="Upload Trail Camera Photos"
             variant="solo-inverted"
@@ -16,7 +18,7 @@
             :loading="isLoading"
             :disabled="isLoading"
         />
-        <!-- https://vuetifyjs.com/en/components/alerts/#icon-->
+        <!-- https://vuetifyjs.com/en/components/alerts/#icon -->
         <v-alert v-if="showError" type="error" dismissible v-model:show="showError">
             {{ errorMessage }}
         </v-alert>
@@ -46,12 +48,13 @@
 <script setup>
 
     import { ref } from 'vue';
-    import { useRouter } from 'vue-router'; // Import useRouter
+    import { useRouter } from 'vue-router';
+
     import ModelSelect from './ModelSelect.vue';
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const router = useRouter(); // Initialize router
+    const router = useRouter();
 
     const file = ref(null);
     const isLoading = ref(false);
@@ -74,9 +77,11 @@
         errorMessage.value = '';
         showError.value = false;
 
+        // Add the file
         const formData = new FormData();
         formData.append('file', file.value);
 
+        // Add the type of model
         const backend = modelSelect.value?.selectedBackEnd;
         console.log("Selected Model", backend);
         if (backend) {
@@ -90,7 +95,6 @@
 
         // Check if token is null and redirect to userPage
         if (!token) {
-            // If no token, redirect to the UserPage view for sign-up
             router.push({ name: 'userPage' }); 
             return; // Exit
         }
@@ -99,7 +103,7 @@
             const response = await fetch(`${backendUrl}/sort`, {
                 method: 'POST',
                 headers: {
-                'Authorization': `Bearer ${token}`, // Include the JWT token in the Authorization header
+                'Authorization': `Bearer ${token}`,
                 },
                 body: formData,
             });
@@ -112,7 +116,7 @@
                 throw new Error(errorMessage.value || 'Upload failed');
             }
 
-            // Get filename from Content-Disposition header if available
+            // Get filename
             const contentDisposition = response.headers.get('Content-Disposition');
             const filenameMatch = contentDisposition && contentDisposition.match(/filename="?([^"]*)"?/);
             filename.value = filenameMatch ? filenameMatch[1] : 'sorted_images.zip';
@@ -125,6 +129,7 @@
                 throw new Error('Received empty file from server');
             }
 
+            // Create link to download blob which is the zip folder
             downloadUrl.value = window.URL.createObjectURL(blob);;
             
             // Reset file input

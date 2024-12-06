@@ -1,9 +1,13 @@
 <script setup>
+
 	import menuComponent from './components/MenuComponent.vue';
+
 	import { RouterView } from 'vue-router';
+
 </script>
 
 <template>
+
 	<v-app>
 		<menuComponent>
 			<router-view v-slot="{ Component }">
@@ -13,6 +17,7 @@
 			</router-view>
 		</menuComponent>
 	</v-app>
+	
 </template>
 
 <style scoped>

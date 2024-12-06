@@ -1,5 +1,5 @@
-
 import { createRouter, createWebHistory } from 'vue-router'
+
 import HomePage from '../views/HomePage.vue'
 import AboutPage from '../views/AboutPage.vue'
 import SortPage from '../views/SortPage.vue'

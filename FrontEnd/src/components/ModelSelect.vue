@@ -1,4 +1,6 @@
 <template>
+
+    <!-- https://vuetifyjs.com/en/components/selects/#usage -->
     <v-select
         v-model="selectedSource"
         :items="sources"
@@ -8,17 +10,20 @@
         class="mb-4"
         outlined
     ></v-select>
+
 </template>
 
 <script setup>
 
-    import { ref, defineExpose, computed } from 'vue';
+    import { ref, computed } from 'vue';
 
 
     const selectedSource = ref('/trail_sort_TF2_display.html');
     const sources = [
         { text: 'Basic Model', value: '/trail_sort_TF2_display.html', backEnd: 'trailSortTF2.keras' },
+        { text: 'Basic Model with more input layers', value: '/trail_sort_TF2MorePixels_display.html', backEnd: 'trailSortTF2MorePixels.keras' },
         { text: 'Larger Model', value: '/trail_sort_TF3Larger_display.html', backEnd: 'trailSortTF3Large.keras' },
+        
     ];
 
     // For defineExpose https://medium.com/@louis.young0420/leveraging-defineexpose-in-vue-3-empowering-component-communication-f4991c1bc997
