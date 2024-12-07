@@ -71,22 +71,38 @@
     };
 
     const uploadFile = async () => {
-        if (!file.value) return;
 
         isLoading.value = true;
         errorMessage.value = '';
         showError.value = false;
 
+        // Check if file is selected
+        if (!file.value) {
+            errorMessage.value = 'Please select a file';
+            showError.value = true;
+            isLoading.value = false;
+            return;
+        }
+
         // Add the file
         const formData = new FormData();
         formData.append('file', file.value);
 
+
         // Add the type of model
         const backend = modelSelect.value?.selectedBackEnd;
-        console.log("Selected Model", backend);
-        if (backend) {
-            formData.append('model_type', backend);
+        
+        // Check if model is selected
+        if (!backend) {
+            errorMessage.value = 'Please select a model';
+            showError.value = true;
+            isLoading.value = false;
+            return;
         }
+
+        // Add the type of model
+        console.log("Selected Model", backend);
+        formData.append('model_type', backend);
 
         // Retrieve the token from localStorage
         const token = localStorage.getItem('token');
@@ -96,7 +112,7 @@
         // Check if token is null and redirect to userPage
         if (!token) {
             router.push({ name: 'userPage' }); 
-            return; // Exit
+            return;
         }
 
         try {
@@ -140,6 +156,7 @@
             console.error("Error uploading file:", error);
             errorMessage.value = error.message || 'An error occurred during the file upload.';
             showError.value = true;
+
         } finally {
             isLoading.value = false;
         }
@@ -149,7 +166,9 @@
 
     // https://stackoverflow.com/questions/54771261/trying-to-send-a-zip-from-the-backend-to-the-frontend
     const downloadFile = () => {
+
         if (downloadUrl.value) {
+            
             const link = document.createElement('a');
             link.href = downloadUrl.value;
             link.download = filename.value;
@@ -161,6 +180,7 @@
             window.URL.revokeObjectURL(downloadUrl.value);
             downloadUrl.value = null; // hide button
         }
+
     };
 
 </script>

@@ -24,12 +24,16 @@ def upload_file(public_id):
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
         
+        # Check if the file is a zip file
+        if not file.filename.endswith('.zip'):
+            return jsonify({"error": "File must be a zip file"}), 400
+        
         # Check if the model is part of form
         model_type = request.form.get('model_type')
         if not model_type:
             return jsonify({"error": "Model not selected"}), 400
 
-        # Logic to send to the front end before deleting last zip file we made
+        # Use the controller to sort the file
         result_path = process_file_upload(file, model_type)
         sorted_folder = send_file(result_path, as_attachment=True)
         
