@@ -21,11 +21,11 @@ class_names = ["blackBear", "coyote", "ruffedGrouse", "turkey", "whitetailDeer"]
 # Function to sort images based on model predictions
 def sort_images(extracted_folder, output_folder, model, target_size):
     
-    # Create subfolders in the processed folder for each class
+    # Create subfolders in the output folder for each class
     for class_name in class_names:
         logger.debug(f"Class name:  {class_name}")
         os.makedirs(os.path.join(output_folder, class_name), exist_ok=True)
-        # logger.debug(f"Class name after:  {class_name}")
+
 
     # Process each image and predict its class
     for root, _, files in os.walk(extracted_folder):
@@ -36,11 +36,12 @@ def sort_images(extracted_folder, output_folder, model, target_size):
                 # Load the image and prepare it
                 img = tf.keras.utils.load_img(img_path, target_size=target_size)
                 img_array = tf.keras.utils.img_to_array(img)
-                img_array = tf.expand_dims(img_array, 0)  # Create a batch
+                img_array = tf.expand_dims(img_array, 0)  
 
                 # Make predictions
                 predictions = model.predict(img_array)
-                score = tf.nn.softmax(predictions[0])  # Get softmax scores
+                # Get softmax scores
+                score = tf.nn.softmax(predictions[0])
 
                 # Get the predicted class and confidence
                 predicted_class = class_names[np.argmax(score)]
@@ -81,7 +82,7 @@ def process_file_upload(file, model_type):
 
     target_size = (img_height, img_width)
 
-
+    # Save the uploaded zip file
     zip_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(zip_path)
 

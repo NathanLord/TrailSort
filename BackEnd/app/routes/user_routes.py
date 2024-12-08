@@ -18,7 +18,7 @@ def user_signup():
         username = data.get('username') 
         password = data.get('password')
 
-        logger.info(f"Received form data: username={username}, password={password}")
+        # logger.info(f"Received form data: username={username}, password={password}")
 
         results = signup_user(username, password)
 
@@ -41,7 +41,7 @@ def user_login():
         username = data.get('username') 
         password = data.get('password')
 
-        logger.info(f"Received form data: username={username}, password={password}")
+        # logger.info(f"Received form data: username={username}, password={password}")
 
         results = login_user(username, password)
 

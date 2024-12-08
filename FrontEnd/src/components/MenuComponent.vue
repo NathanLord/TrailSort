@@ -1,18 +1,16 @@
 <template>
   <v-app>
     <v-app-bar app>
+
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-
       <v-toolbar-title  class="text-center flex-grow-1">Trail Sort</v-toolbar-title>
-      
 
       <router-link to="/user">
         <v-btn icon color="white">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
       </router-link>
-      
 
     </v-app-bar>
 
@@ -21,14 +19,13 @@
         <v-list-item v-for="(item, index) in items" :key="index">
 
           <router-link :to="item.route" class="router-link" exact>
+
             <v-btn icon>
-              <v-list-item-icon>
                 <v-icon >{{ item.icon }}</v-icon>
-              </v-list-item-icon>
             </v-btn>
-            <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item-content>
+            
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            
          </router-link>
 
         </v-list-item>
