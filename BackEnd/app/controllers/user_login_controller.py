@@ -65,6 +65,7 @@ def login_user(username, password):
         return {"error": str(ve)}  
     
     except Exception as e:
+        logger.error(f"Login error: {e}")
         return {"error": str(e)}, 500  
 
     finally:

@@ -4,7 +4,9 @@ import shutil
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+
 from app.config import UPLOAD_FOLDER, PROCESSED_FOLDER
+
 import logging
 
 
@@ -40,7 +42,7 @@ def sort_images(extracted_folder, output_folder, model, target_size):
 
                 # Make predictions
                 predictions = model.predict(img_array)
-                # Get softmax scores
+                # Get scores
                 score = tf.nn.softmax(predictions[0])
 
                 # Get the predicted class and confidence
@@ -59,9 +61,9 @@ def process_file_upload(file, model_type):
 
     # Dictionary for front-end to correspond to back-end models
     model_paths = {
-        'trailSortTF2.keras': "model/trailSortTF2.keras",
-        'trailSortTF3Large.keras': "model/trailSortTF3Large.keras",
-        'trailSortTF2MorePixels.keras': "model/trailSortTF2MorePixels.keras"
+        'trailSortTF1.keras': "model/trailSortTF1.keras",
+        'trailSortTF2MorePixels.keras': "model/trailSortTF2MorePixels.keras",
+        'trailSortTF3Large.keras': "model/trailSortTF3Large.keras"
     }
 
     # Check if the model_type is in the model_paths dictionary

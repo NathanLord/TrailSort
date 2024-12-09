@@ -18,11 +18,11 @@
     import { ref, computed } from 'vue';
 
 
-    const selectedSource = ref('/trail_sort_TF2_display.html');
+    const selectedSource = ref('/iNaturalRawClassification_TF1_display.html');
     const sources = [
-        { text: 'Basic Model', value: '/trail_sort_TF2_display.html', backEnd: 'trailSortTF2.keras' },
-        { text: 'Basic Model with more input layers', value: '/trail_sort_TF2MorePixels_display.html', backEnd: 'trailSortTF2MorePixels.keras' },
-        { text: 'Larger Model', value: '/trail_sort_TF3Larger_display.html', backEnd: 'trailSortTF3Large.keras' },
+        { text: 'Basic Model', value: '/iNaturalRawClassification_TF1_display.html', backEnd: 'trailSortTF1.keras' },
+        { text: 'Model with more input layers', value: '/iNaturalRawClassification_TF2MorePixels_display.html', backEnd: 'trailSortTF2MorePixels.keras' },
+        { text: 'Model trained on larger dataset', value: '/iNaturalRawClassification_TF3Large_display.html', backEnd: 'trailSortTF3Large.keras' },
         
     ];
 
