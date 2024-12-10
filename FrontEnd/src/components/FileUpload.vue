@@ -90,9 +90,10 @@
 
 
         // Add the type of model
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
         const backend = modelSelect.value?.selectedBackEnd;
         
-        // Check if model is selected
+        // Check for model
         if (!backend) {
             errorMessage.value = 'Please select a model';
             showError.value = true;
@@ -137,10 +138,10 @@
             const filenameMatch = contentDisposition && contentDisposition.match(/filename="?([^"]*)"?/);
             filename.value = filenameMatch ? filenameMatch[1] : 'sorted_images.zip';
 
-            // Handle ZIP file download
+            // create blob
             const blob = await response.blob();
             
-            // Verify blob size
+
             if (blob.size === 0) {
                 throw new Error('Received empty file from server');
             }
@@ -148,7 +149,7 @@
             // Create link to download blob which is the zip folder
             downloadUrl.value = window.URL.createObjectURL(blob);;
             
-            // Reset file input
+
             file.value = null;
 
 

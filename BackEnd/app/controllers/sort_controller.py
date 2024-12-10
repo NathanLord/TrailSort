@@ -16,7 +16,6 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 
 
-# Image classes
 class_names = ["blackBear", "coyote", "ruffedGrouse", "turkey", "whitetailDeer"]
 
 
@@ -40,16 +39,16 @@ def sort_images(extracted_folder, output_folder, model, target_size):
                 img_array = tf.keras.utils.img_to_array(img)
                 img_array = tf.expand_dims(img_array, 0)  
 
-                # Make predictions
+                # Make predictions and get score
                 predictions = model.predict(img_array)
-                # Get scores
+                
                 score = tf.nn.softmax(predictions[0])
 
                 # Get the predicted class and confidence
                 predicted_class = class_names[np.argmax(score)]
                 confidence = 100 * np.max(score)
 
-                # Log outcome
+
                 logger.debug(f"Image: {file_name} -> Predicted Class: {predicted_class} with {confidence:.2f}% confidence")
 
                 # Copy the image to the predicted class folder
@@ -70,10 +69,10 @@ def process_file_upload(file, model_type):
     if model_type not in model_paths:
         raise ValueError(f"Model type, {model_type}, does not match an existing model.")
 
-    # Load the selected model based on the model_type
+    # Load the selected model
     model = load_model(model_paths[model_type])
 
-    # Set target size based selected model
+    # Set size based selected model
     if model_type == 'trailSortTF2MorePixels.keras':
         img_height = 256
         img_width = 256
@@ -98,7 +97,7 @@ def process_file_upload(file, model_type):
     output_folder = os.path.join(PROCESSED_FOLDER, "processed_images")
     os.makedirs(output_folder, exist_ok=True)
 
-    # Sort images based on TensorFlow model predictions
+    # Sort images
     sort_images(extract_folder, output_folder, model, target_size)
 
     # Create a zip file of the sorted images https://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory

@@ -12,9 +12,9 @@ def token_required(f):
         token = None
         if 'Authorization' in request.headers:
             auth_header = request.headers['Authorization']
-            # Check if the header starts with 'Bearer ' to get the token
+            # Check if the header starts with 'Bearer ' to get the token adn then remove it
             if auth_header.startswith('Bearer '):
-                token = auth_header[7:]  # Remove 'Bearer ' part to get the token
+                token = auth_header[7:] 
             else:
                 return jsonify({'message': 'Token is missing or malformed. Try logining in'}), 401
 
