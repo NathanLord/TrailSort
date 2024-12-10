@@ -68,130 +68,130 @@
 
 <script setup>
 
-		import {ref} from 'vue';
+	import {ref} from 'vue';
 
-		const backendUrl = import.meta.env.VITE_BACKEND_URL;
+	const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-		const username = ref('');
-		const password = ref('');
-		const isLoading = ref(false);
-		const errorMessage = ref('');
-		const isSignUp = ref(true);
+	const username = ref('');
+	const password = ref('');
+	const isLoading = ref(false);
+	const errorMessage = ref('');
+	const isSignUp = ref(true);
 
-		const isAuthenticated = ref(!!localStorage.getItem('token'));
-
-
-		const toggleForm = () => {
-				username.value = '';
-				password.value = '';
-				isSignUp.value = !isSignUp.value;
-		};
-
-		const signup = async () => {
-
-				isLoading.value = true;
-				errorMessage.value = '';
-
-				if (!username.value || !password.value) {
-						errorMessage.value = 'Please fill out all fields.';
-						return;
-				}
-				console.log(username.value);
-
-				try {
-						const response = await fetch(`${backendUrl}/user/signup`, {
-								method: 'POST',
-								headers: { 'Content-Type': 'application/json' },
-								body: JSON.stringify({
-										username: username.value,
-										password: password.value,
-								}),
-				});
-
-				if (!response.ok) {
-						const errorData = await response.json();
-						console.error('SignUp error:', errorData);
-						throw new Error(errorData.error || 'SignUp failed');
-				}
-
-				const data = await response.json();
-				console.log('SignUp successful:', data);
-				isSignUp.value = false;
-				username.value = '';
-				password.value = '';
+	const isAuthenticated = ref(!!localStorage.getItem('token'));
 
 
-				} catch (error) {
-						console.error('Error SignUp in:', error);
-						errorMessage.value = error.message || 'An error occurred during SignUp.';
-				} finally {
-						isLoading.value = false;
-				}
-		};
+	const toggleForm = () => {
+			username.value = '';
+			password.value = '';
+			isSignUp.value = !isSignUp.value;
+	};
+
+	const signup = async () => {
+
+			isLoading.value = true;
+			errorMessage.value = '';
+
+			if (!username.value || !password.value) {
+					errorMessage.value = 'Please fill out all fields.';
+					return;
+			}
+			console.log(username.value);
+
+			try {
+					const response = await fetch(`${backendUrl}/user/signup`, {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+									username: username.value,
+									password: password.value,
+							}),
+			});
+
+			if (!response.ok) {
+					const errorData = await response.json();
+					console.error('SignUp error:', errorData);
+					throw new Error(errorData.error || 'SignUp failed');
+			}
+
+			const data = await response.json();
+			console.log('SignUp successful:', data);
+			isSignUp.value = false;
+			username.value = '';
+			password.value = '';
 
 
-		const login = async () => {
-
-				errorMessage.value = '';
-				// console.log('Login', { username: username.value, password: password.value });
-
-				isLoading.value = true;
-				if (!username.value || !password.value) {
-						errorMessage.value = 'Please fill out all fields.';
-						return;
-				}
-				console.log(username.value);
-
-				try {
-						const response = await fetch(`${backendUrl}/user/login`, {
-										method: 'POST',
-										headers: { 'Content-Type': 'application/json' },
-										body: JSON.stringify({
-										username: username.value,
-										password: password.value,
-								}),
-				});
-
-				if (!response.ok) {
-						const errorData = await response.json();
-						console.error('Login error:', errorData);
-						throw new Error(errorData.error || 'Login failed');
-				}
-
-				const data = await response.json();
-
-				if (data.token) {
-						// Store JWT token in localStorage
-						localStorage.setItem('token', data.token);
-						//console.log('Login successful:', data);
-
-						isAuthenticated.value = true;
-
-						username.value = '';
-						password.value = '';
-				} else {
-						throw new Error('Token not received');
-				}
+			} catch (error) {
+					console.error('Error SignUp in:', error);
+					errorMessage.value = error.message || 'An error occurred during SignUp.';
+			} finally {
+					isLoading.value = false;
+			}
+	};
 
 
-				} catch (error) {
-						console.error('Error logining in:', error);
-						errorMessage.value = error.message || 'An error occurred during Login.';
-				} finally {
-						isLoading.value = false;
-				}
+	const login = async () => {
+
+			errorMessage.value = '';
+			// console.log('Login', { username: username.value, password: password.value });
+
+			isLoading.value = true;
+			if (!username.value || !password.value) {
+					errorMessage.value = 'Please fill out all fields.';
+					return;
+			}
+			console.log(username.value);
+
+			try {
+					const response = await fetch(`${backendUrl}/user/login`, {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+									username: username.value,
+									password: password.value,
+							}),
+			});
+
+			if (!response.ok) {
+					const errorData = await response.json();
+					console.error('Login error:', errorData);
+					throw new Error(errorData.error || 'Login failed');
+			}
+
+			const data = await response.json();
+
+			if (data.token) {
+					// Store JWT token in localStorage
+					localStorage.setItem('token', data.token);
+					//console.log('Login successful:', data);
+
+					isAuthenticated.value = true;
+
+					username.value = '';
+					password.value = '';
+			} else {
+					throw new Error('Token not received');
+			}
 
 
-		};
+			} catch (error) {
+					console.error('Error logining in:', error);
+					errorMessage.value = error.message || 'An error occurred during Login.';
+			} finally {
+					isLoading.value = false;
+			}
 
 
-		const logout = () => {
-				const token = localStorage.getItem('token');
-				//console.log(token);
-				localStorage.removeItem('token');  
-				console.log('Logged out successfully');
-				isAuthenticated.value = false;
-		};
+	};
+
+
+	const logout = () => {
+			const token = localStorage.getItem('token');
+			//console.log(token);
+			localStorage.removeItem('token');  
+			console.log('Logged out successfully');
+			isAuthenticated.value = false;
+	};
 
 </script>
 
