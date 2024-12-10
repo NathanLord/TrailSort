@@ -10,11 +10,11 @@ Read the README's in the subdirectories below to get started with those services
 
 # Demo
 
-<a href="demo/animation.gif" title="View the demo folder if this section does not load." style="color: orange;">View the demo folder if this section does not load.</a>
+<a href="Demo/animation.gif" title="View the demo folder if this section does not load." style="color: orange;">View the demo folder if this section does not load.</a>
 
 <br>
 
-![Animation](demo/animation.gif)
+![Animation](Demo/animation.gif)
 
 
 <br>
