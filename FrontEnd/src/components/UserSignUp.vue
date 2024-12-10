@@ -87,6 +87,8 @@
 			isSignUp.value = !isSignUp.value;
 	};
 
+	
+	// https://www.w3schools.com/vue/vue_http.php
 	const signup = async () => {
 
 			isLoading.value = true;
@@ -116,6 +118,8 @@
 
 			const data = await response.json();
 			console.log('SignUp successful:', data);
+
+
 			isSignUp.value = false;
 			username.value = '';
 			password.value = '';
@@ -169,6 +173,7 @@
 
 					username.value = '';
 					password.value = '';
+
 			} else {
 					throw new Error('Token not received');
 			}
