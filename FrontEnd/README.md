@@ -10,6 +10,6 @@
 
 ```npm run dev```
 
-Vuetify - componenet library
+Vuetify - component library
 
 Vue Router - used to handle routes.
