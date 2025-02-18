@@ -4,12 +4,15 @@ import HomePage from '../views/HomePage.vue'
 import AboutPage from '../views/AboutPage.vue'
 import SortPage from '../views/SortPage.vue'
 import UserPage from '../views/UserPage.vue'
+import BlogEditor from '../views/BlogEditor.vue'
 
 const routes = [
     { path: '/', component: HomePage, name: 'homePage' },
     { path: '/about', component: AboutPage, name: 'aboutPage' },
     { path: '/sort', component: SortPage, name: 'sortPage' },
     { path: '/user', component: UserPage, name: 'userPage' },
+    { path: '/blog/editor', component: BlogEditor, name: 'blogEditor' },
+    
 ]
 
 const router = createRouter({
