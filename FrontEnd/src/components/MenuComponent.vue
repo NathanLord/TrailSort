@@ -51,7 +51,7 @@
     { title: 'Home', icon: 'mdi-home', route: '/' },
     { title: 'About', icon: 'mdi-information', route: '/about' },
     { title: 'Sort', icon: 'mdi-file-document-arrow-right ', route: '/sort' },
-    { title: 'Blog Editor', icon: 'mdi-post-outline', route: '/blog/editor' }
+    { title: 'Blog', icon: 'mdi-post-outline', route: '/blog' }
   ]
   
 </script>

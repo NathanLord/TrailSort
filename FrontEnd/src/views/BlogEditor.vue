@@ -12,6 +12,7 @@ window.katex = katex
 // Expose Quill to global window object
 window.Quill = Quill
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const editor = ref<InstanceType<typeof QuillyEditor>>()
 const model = ref<string>('')
@@ -46,6 +47,32 @@ const options = ref({
   readOnly: false
 })
 
+const publishModel = async () => {
+  try {
+    const modelData = model.value;
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    const response = await fetch(`${backendUrl}/blog/editor`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(modelData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error publishing model:', error);
+  }
+};
+
+
+
 onMounted(async () => {
   window.Quill.imports.parchment.Attributor.Style = window.Quill.imports.parchment.StyleAttributor
   // @ts-ignore
@@ -60,6 +87,11 @@ const onEditorChange = (eventName: string) => console.log(eventName)
 </script>
 
 <template>
+  
+  <div>
+
+
+  
   <QuillyEditor
     ref="editor"
     v-model="model"
@@ -69,8 +101,12 @@ const onEditorChange = (eventName: string) => console.log(eventName)
     @selection-change="onSelectionChange"
     @editor-change="onEditorChange"
   />
+
+  <v-btn color="primary" @click="publishModel">Publish</v-btn>
+
+
   <!-- Sart of the model output-->
-   <!--
+  <!--
   <p class="text-label">MODEL:</p>
   <p>{{ model }}</p>
   <button class="pure-button" @click="model = `<h1>Hello world!</h1><p>I am a new paragraph</p>`">Set model</button>
@@ -107,4 +143,10 @@ const onEditorChange = (eventName: string) => console.log(eventName)
   <p class="text-label">Readonly:</p>
   <p><input :value="quill?.isEnabled()" type="checkbox" @input="quill?.enable(!quill?.isEnabled())"/></p>
   -->
+
+  
+  <div v-html="model"></div>
+  
+  </div>
+  
 </template>
