@@ -14,7 +14,7 @@
 
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app color="background">
+    <v-navigation-drawer v-model="drawer" app color="background"  temporary @click:outside="onClickOutside">
       <v-list>
         <v-list-item v-for="(item, index) in items" :key="index">
 
@@ -53,6 +53,17 @@
     { title: 'Sort', icon: 'mdi-file-document-arrow-right ', route: '/sort' },
     { title: 'Blog', icon: 'mdi-post-outline', route: '/blog' }
   ]
+
+  function onClickOutside() {
+    console.log('onClickOutside called')
+    console.log('drawer value:', drawer.value)
+    if (drawer.value) {
+      console.log('minimizing drawer')
+      drawer.value = false
+    }
+  }
+
+  
   
 </script>
 

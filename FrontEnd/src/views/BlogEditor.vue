@@ -1,42 +1,29 @@
-<script setup lang="ts">
-import { onMounted, ref } from 'vue'
+<script setup>
+import { ref, onMounted, nextTick  } from 'vue'
 import { QuillyEditor } from 'vue-quilly'
-import { Delta, Range } from 'quill/core'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
-import katex from 'katex'
-import 'katex/dist/katex.min.css'
-
-// Expose Katex plugin to global window object
-window.katex = katex
-// Expose Quill to global window object
-window.Quill = Quill
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const editor = ref<InstanceType<typeof QuillyEditor>>()
-const model = ref<string>('')
+// Expose Quill globally
+window.Quill = Quill
 
-const titleModel = ref<string>('')
-
-// Title editor options (forces H1)
+// Title model and options (limited formatting)
+const titleModel = ref('')
+const titleEditorRef = ref(null)
 const titleOptions = ref({
   theme: 'snow',
   modules: {
-    toolbar: [['bold', 'italic', 'underline']], // Limited formatting
+    toolbar: [[{ header: '1' }, 'blockquote']], // Limited formatting
   },
   placeholder: 'Enter Title...',
   readOnly: false
 })
 
-// Demo model
-//const model = ref<string>(`<h1 class="ql-align-center"><span style="background-color: rgb(255, 235, 204);"> </span><span style="background-color: rgb(255, 235, 204); color: rgb(102, 163, 224);">Lorem Ipsum</span><span style="background-color: rgb(255, 235, 204);"> </span></h1><h2><span style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">What is Lorem Ipsum?</span></h2><p class="ql-align-justify"><strong style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">Lorem Ipsum</strong><span style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of</span><span style="background-color: rgb(255, 255, 255);"> </span><a href="https://github.com/alekswebnet/vue-quilly" rel="noopener noreferrer" target="_blank" style="background-color: rgb(255, 255, 255);">Lorem Ipsum</a><span style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">.</span></p><ol><li data-list="ordered" class="ql-align-justify"><span class="ql-ui" contenteditable="false"></span>Lorem</li><li data-list="ordered" class="ql-align-justify"><span class="ql-ui" contenteditable="false"></span>Ipsum</li><li data-list="ordered" class="ql-align-justify"><span class="ql-ui" contenteditable="false"></span>Dolor</li></ol><p class="ql-align-justify"><img src="https://picsum.photos/seed/picsum/300/300"></p><iframe class="ql-video" frameborder="0" allowfullscreen="true" src="https://www.youtube.com/embed/2ZahQhb98-E?si=MJDVZOXxjvWrv9Kl"></iframe><p><br></p><p><span class="ql-formula" data-value="e=mc^2">﻿<span contenteditable="false"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">e=mc^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.8141em;"></span><span class="mord mathnormal">m</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>﻿</span></p>`)
-
-const editorDelta = ref<Delta>()
-const editorRange = ref<Range>()
-
-let quill: Quill | null = null
-
+// Content model and options (comprehensive)
+const contentModel = ref('')
+const contentEditorRef = ref(null)
 const options = ref({
   theme: 'snow',
   modules: {
@@ -52,24 +39,52 @@ const options = ref({
       ['clean']
     ],
     imageResize: {
-      modules: ['Resize', 'DisplaySize', 'Toolbar'],
+      modules: ['Resize', 'DisplaySize', 'Toolbar']
     },
   },
   placeholder: 'Insert text here ...',
   readOnly: false
 })
 
+// Initialization on mount
+onMounted(async () => {
+  // Patch for style attributor
+  window.Quill.imports.parchment.Attributor.Style = window.Quill.imports.parchment.StyleAttributor
+  
+  // Dynamically import image resize module
+  const QuillImageResize = await import('quill-image-resize-module')
+  
+  // Register the image resize module
+  window.Quill.register('modules/imageResize', QuillImageResize.default, { silent: true })
+  
+  // Initialize the title editor
+  if (titleEditorRef.value) {
+    titleEditorRef.value.initialize(window.Quill)
+  }
+
+  // Initialize the content editor
+  if (contentEditorRef.value) {
+    contentEditorRef.value.initialize(window.Quill)
+  }
+
+
+
+})
+
+// Publish function (placeholder)
 const publishModel = async () => {
   try {
-    const modelData = model.value;
+    const titleData = titleModel.value;
+    const contentData = contentModel.value;
     const headers = {
       'Content-Type': 'application/json',
     };
 
+    // Handle both model and title for this post
     const response = await fetch(`${backendUrl}/blog/editor`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(modelData),
+      body: JSON.stringify({ title: titleData, content: contentData }),
     });
 
     if (!response.ok) {
@@ -81,98 +96,66 @@ const publishModel = async () => {
   } catch (error) {
     console.error('Error publishing model:', error);
   }
-};
-
-
-
-onMounted(async () => {
-  window.Quill.imports.parchment.Attributor.Style = window.Quill.imports.parchment.StyleAttributor
-  // @ts-ignore
-  const QuillImageResize = await import('quill-image-resize-module');
-  quill = editor.value?.initialize(window.Quill)!
-})
-
-const onModelValueChange = (value: string) => console.log(value)
-const onTextChange = (({ delta }: { delta: Delta }) => (editorDelta.value = delta))
-const onSelectionChange = ({ range }: { range: Range }) => (editorRange.value = range)
-const onEditorChange = (eventName: string) => console.log(eventName)
+}
 </script>
 
 <template>
-  
   <div>
 
 
-    <!-- Title Editor -->
+    <h3>Title Editor</h3>
     <QuillyEditor
+      ref="titleEditorRef"
       v-model="titleModel"
       :options="titleOptions"
     />
 
-  
-  <QuillyEditor
-    ref="editor"
-    v-model="model"
-    :options="options"
-    @update:model-value="onModelValueChange"
-    @text-change="onTextChange"
-    @selection-change="onSelectionChange"
-    @editor-change="onEditorChange"
-  />
+    <h3>Content Editor</h3>
+    <QuillyEditor
+      ref="contentEditorRef"
+      v-model="contentModel"
+      :options="options"
+    />
 
-  <v-btn color="primary" @click="publishModel">Publish</v-btn>
+    <v-container class="d-flex justify-center">
+      <v-row justify="center">
+        <v-col cols="12" md="8" lg="6">
 
+          <div  v-html="titleModel"></div>
+          <div  v-html="contentModel"></div>
 
-  <!-- Sart of the model output-->
-  <!--
-  <p class="text-label">MODEL:</p>
-  <p>{{ model }}</p>
-  <button class="pure-button" @click="model = `<h1>Hello world!</h1><p>I am a new paragraph</p>`">Set model</button>
-  <button class="pure-button" @click="quill?.setContents([])">Reset model</button>
-  <p class="text-label">CONTENTS:</p>
-  <p>{{ quill?.getContents() }}</p>
-  <button
-    class="pure-button"
-    @click="
-      quill?.setContents(
-        new Delta()
-          .insert('Hello')
-          .insert('\n', { header: 1 })
-          .insert('Some ')
-          .insert('initial', { bold: true })
-          .insert(' ')
-          .insert('content', { underline: true })
-          .insert('\n')
-      )
-    "
-  >
-    Set contents
-  </button>
-  <button class="pure-button" @click="quill?.setContents([])">Reset contents</button>
-  <p class="text-label">SEMANTIC HTML:</p>
-  <p>{{ quill?.getSemanticHTML() }}</p>
-  <p class="text-label">LAST CHANGE:</p>
-  <p>{{ editorDelta }}</p>
-  <p class="text-label">CURRENT SELECTION:</p>
-  <p>{{ editorRange }}</p>
-  <button class="pure-button" @click="quill?.setSelection({ index: 5, length: 2 })">Set range</button>
-  <p class="text-label">CONTENT LENGTH:</p>
-  <p>{{ quill?.getLength() }}</p>
-  <p class="text-label">Readonly:</p>
-  <p><input :value="quill?.isEnabled()" type="checkbox" @input="quill?.enable(!quill?.isEnabled())"/></p>
-  -->
-
-  <v-container class="d-flex justify-center">
-    <v-row justify="center">
-      <v-col cols="12" md="8" lg="6">
-
-        <div class="ql-editor" v-html="model"></div>
+          <!-- <div class="ql-editor" v-html="contentModel"></div> -->
 
 
-      </v-col>
-    </v-row>
-  </v-container>
-  
+
+        </v-col>
+      </v-row>
+    </v-container>
+
+
+
+    <div class="publish-section">
+      <v-btn color="primary" @click="publishModel">Publish</v-btn>
+    </div>
+
+
+
+    
+
+
   </div>
-  
 </template>
+
+<style scoped>
+
+.ql-editor {
+  margin: 0;         /* Remove any margins */
+  padding: 10px;     /* Optional: Adjust padding as needed */
+  line-height: 1.5;  /* Optional: Adjust line height for better spacing */
+}
+
+.publish-section {
+  margin-top: 20px;
+  text-align: center;
+}
+</style>
