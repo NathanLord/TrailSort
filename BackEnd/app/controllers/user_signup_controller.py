@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 # https://www.geeksforgeeks.org/making-a-flask-app-using-a-postgresql-database/
 # https://www.geeksforgeeks.org/using-jwt-for-user-authentication-in-flask/
 
-def signup_user(username, password):
+def signup_user(username, password, email, firstName, lastName):
 
     conn = None # conn is the connection to the db
     cur = None # cur is the cursor which is based off of the connection. It alllows you to execute sql commands
 
     try:
 
-        if not username or not password:
+        if not username or not password or not email or not firstName or not lastName:
             raise ValueError("Username and password are required.")
         
         hashed_password = generate_password_hash(password)
@@ -46,8 +46,8 @@ def signup_user(username, password):
             raise ValueError("Username already exists")
 
         # Insert
-        query_insert = sql.SQL("INSERT INTO users (username, password) VALUES (%s, %s)")
-        cur.execute(query_insert, (username, hashed_password))
+        query_insert = sql.SQL("INSERT INTO users (username, password, email, first_name, last_name) VALUES (%s, %s, %s, %s, %s)")
+        cur.execute(query_insert, (username, hashed_password, email, firstName, lastName))
 
         conn.commit()  # Save
 

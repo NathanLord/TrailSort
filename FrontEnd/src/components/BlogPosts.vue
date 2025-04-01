@@ -82,6 +82,11 @@
             .replace(/<\/[^>]+>/g, '\n$&'); // Add newline before every closing tag
     };
 
+    const getFirstH2Text = (htmlString) => {
+      const match = htmlString.match(/<h2[^>]*>(.*?)<\/h2>/);
+      return match ? match[1].trim() : ''; // Return the content or an empty string if not found
+    };
+
 
 
 
@@ -113,7 +118,7 @@
                 blogPosts.value = data.map((blog) => {
                     return {
                     title: removeHtmlTags(blog.title), 
-                    content: removeHtmlTags(removeHtmlTagsWithNewlines(blog.content)), 
+                    content: getFirstH2Text(blog.content), 
                     };
                 });
             } else {

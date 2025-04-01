@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <UserSignUp></UserSignUp>
     </div>
 </template>

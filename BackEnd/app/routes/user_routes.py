@@ -17,10 +17,14 @@ def user_signup():
         data = request.get_json() 
         username = data.get('username') 
         password = data.get('password')
+        firstName = data.get('firstName')
+        lastName = data.get('lastName')
+        email = data.get('email')
+
 
         # logger.info(f"Received form data: username={username}, password={password}")
 
-        results = signup_user(username, password)
+        results = signup_user(username, password, firstName, lastName, email)
 
         if 'error' in results:
             return jsonify({"error": results['error']}), 400

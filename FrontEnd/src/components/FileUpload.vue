@@ -49,12 +49,14 @@
 
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
+    import { useAuthStore } from '../stores/authStore';
 
     import ModelSelect from './ModelSelect.vue';
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const router = useRouter();
+    const authStore = useAuthStore();
 
     const file = ref(null);
     const isLoading = ref(false);
@@ -105,8 +107,8 @@
         console.log("Selected Model", backend);
         formData.append('model_type', backend);
 
-        // Retrieve the token from localStorage
-        const token = localStorage.getItem('token');
+        // Retrieve the token from auth store
+        const token = authStore.token;
         //console.log(token);
 
 
