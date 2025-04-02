@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, nextTick  } from 'vue'
 import { QuillyEditor } from 'vue-quilly'
+import { useAuthStore } from '../stores/auth';
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 
@@ -8,6 +9,14 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 // Expose Quill globally
 window.Quill = Quill
+
+
+// Get user info from auth store
+const authStore = useAuthStore()
+
+// Local refs for first and last name
+const firstName = ref(authStore.user?.first_name || '');
+const lastName = ref(authStore.user?.last_name || '');
 
 // Title model and options (limited formatting)
 const titleModel = ref('')
@@ -46,12 +55,26 @@ const options = ref({
   readOnly: false
 })
 
-const selectedImage = ref(null); // Store the uploaded image
+const selectedImage = ref(null); // For preview
+const imageFile = ref(null);     // Actual file for upload
+const imagePreview = ref(null);  // URL for preview
+const isUploading = ref(false);  // Upload status flag
+
 // Handle Image Upload
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
-    selectedImage.value = URL.createObjectURL(file);
+    imageFile.value = file;
+    imagePreview.value = URL.createObjectURL(file);
+  }
+};
+
+// Remove selected image
+const removeImage = () => {
+  imageFile.value = null;
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value);
+    imagePreview.value = null;
   }
 };
 
@@ -82,17 +105,35 @@ onMounted(async () => {
 // Publish function (placeholder)
 const publishModel = async () => {
   try {
+
+    isUploading.value = true;
     const titleData = titleModel.value;
     const contentData = contentModel.value;
+    const authorData = `${firstName.value} ${lastName.value}`;
+    const dateData = getFormattedDate();
+
+    /*
     const headers = {
       'Content-Type': 'application/json',
     };
+    */
 
-    // Handle both model and title for this post
+    // Create FormData object for multipart/form-data upload
+    const formData = new FormData();
+    formData.append('title', titleData);
+    formData.append('content', contentData);
+    formData.append('author', authorData);
+    formData.append('date', dateData);
+    
+    // Append image file if it exists
+    if (imageFile.value) {
+      formData.append('image', imageFile.value);
+    }
+
+    // Send the form data to the server
     const response = await fetch(`${backendUrl}/blog/editor`, {
       method: 'POST',
-      headers,
-      body: JSON.stringify({ title: titleData, content: contentData }),
+      body: formData, // No need to set Content-Type header for FormData
     });
 
     if (!response.ok) {
@@ -103,6 +144,8 @@ const publishModel = async () => {
     console.log(data);
   } catch (error) {
     console.error('Error publishing model:', error);
+  } finally {
+    isUploading.value = false;
   }
 }
 
@@ -123,6 +166,12 @@ const publishModel = async () => {
     return match ? match[1].trim() : ''; // Return the content or an empty string if not found
   };
 
+  const getFormattedDate = () => {
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return today.toLocaleDateString('en-US', options); // Return formatted date
+  };
+
 
 </script>
 
@@ -140,7 +189,7 @@ const publishModel = async () => {
 
     <!-- Image Upload -->
     <v-container>
-      <v-file-input label="Upload Main Image" accept="image/*" @change="handleImageUpload"></v-file-input>
+      <v-file-input label="Upload Main Image" accept="image/*" @change="handleImageUpload" prepend-icon="mdi-camera"></v-file-input>
     </v-container>
 
     <h3>Content Editor</h3>
@@ -159,10 +208,14 @@ const publishModel = async () => {
       <v-row justify="center">
         <v-col cols="12" md="8" lg="6">
 
-          <div class="mb-8" v-html="titleModel"></div>
+          <div v-html="titleModel"></div>
+          <div class="mb-8">
+            <p>By: {{ firstName }} {{ lastName }}</p>
+            <p>Published: {{ getFormattedDate() }}</p>
+          </div>
 
           <!-- Display Image if Available -->
-          <v-img v-if="selectedImage" :src="selectedImage" contain max-height="1000px" width="100%"></v-img>
+          <v-img v-if="imagePreview" :src="imagePreview" contain max-height="800px" width="100%"></v-img>
 
           
           <div class="mt-8" v-html="contentModel"></div>
@@ -187,7 +240,7 @@ const publishModel = async () => {
               v-bind="props"
             >
                 <!-- Image Preview (if uploaded) -->
-              <v-img v-if="selectedImage" :src="selectedImage" height="200" cover></v-img>
+              <v-img v-if="imagePreview" :src="imagePreview" height="200" cover></v-img>
 
               
   
@@ -195,7 +248,8 @@ const publishModel = async () => {
                 <h2 class="text-h6 text-primary">
                   {{ removeHtmlTags(titleModel) }}
                 </h2>
-                {{ getFirstH2Text(contentModel) }}
+                <p>By: {{ firstName }} {{ lastName }}</p>
+                <p>{{ getFormattedDate() }} </p>
               </v-card-text>
   
               
@@ -217,7 +271,7 @@ const publishModel = async () => {
 
 
     <div class="publish-section">
-      <v-btn color="primary" @click="publishModel">Publish</v-btn>
+      <v-btn color="primary" @click="publishModel" :loading="isUploading" :disabled="isUploading">Publish</v-btn>
     </div>
 
 

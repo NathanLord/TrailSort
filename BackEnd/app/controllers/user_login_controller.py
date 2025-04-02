@@ -38,7 +38,8 @@ def login_user(username, password):
         cur = conn.cursor()
 
         # Check db for user
-        query_check = sql.SQL("SELECT * FROM users WHERE username = %s")
+        #query_check = sql.SQL("SELECT * FROM users WHERE username = %s")
+        query_check = sql.SQL("SELECT id, username, password, first_name, last_name, role FROM users WHERE username = %s")
         cur.execute(query_check, (username,))
         user = cur.fetchone()
 
@@ -46,6 +47,12 @@ def login_user(username, password):
             raise ValueError("User does not exist")
 
         stored_password_hash = user[2]  # third column in db is password
+        first_name = user[3]  # fourth column in db is first_name
+        last_name = user[4]  # fifth column in db is last_name
+        role = user[5]
+
+        # display first and last name and role
+        print(f"First name: {first_name}, Last name: {last_name}, Role: {role}")
         
         # Check if the provided password matches the stored hash
         if check_password_hash(stored_password_hash, password):
@@ -54,7 +61,12 @@ def login_user(username, password):
                 'exp': datetime.now(timezone.utc) + timedelta(minutes=30)  # Expiration time
             }, JWT_SECRET_KEY, algorithm='HS256')  
 
-            return {'token': token}
+            return {
+                'token': token, 
+                'first_name': first_name,
+                'last_name': last_name,
+                'role': role
+                }
 
         else:
 

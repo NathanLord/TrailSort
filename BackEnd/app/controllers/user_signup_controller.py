@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # https://www.geeksforgeeks.org/making-a-flask-app-using-a-postgresql-database/
 # https://www.geeksforgeeks.org/using-jwt-for-user-authentication-in-flask/
 
-def signup_user(username, password, email, firstName, lastName):
+def signup_user(username, password, firstName, lastName, email):
 
     conn = None # conn is the connection to the db
     cur = None # cur is the cursor which is based off of the connection. It alllows you to execute sql commands

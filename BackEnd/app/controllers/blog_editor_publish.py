@@ -14,7 +14,7 @@ JWT_SECRET_KEY = Config.JWT_SECRET_KEY
 
 
 logger = logging.getLogger(__name__)
-def publish_blog(title, content):
+def publish_blog(title, content, author, date, image_binary):
 
     conn = None # conn is the connection to the db
     cur = None # cur is the cursor which is based off of the connection. It alllows you to execute sql commands
@@ -27,10 +27,10 @@ def publish_blog(title, content):
         conn = psycopg2.connect(database_url)
         cur = conn.cursor()
 
-        query_insert = "INSERT INTO blog_posts (title, content) VALUES (%s, %s)"
+        query_insert = "INSERT INTO blog_posts (title, content, author, date, image) VALUES (%s, %s, %s, %s, %s)"
         
-        # Execute the query with the blog content and title
-        cur.execute(query_insert, (title, content,))  # Pass the title and blog_content as a tuple
+        # Execute the query with the blog data and image binary
+        cur.execute(query_insert, (title, content, author, date, psycopg2.Binary(image_binary)))
 
         conn.commit()  # Save
 

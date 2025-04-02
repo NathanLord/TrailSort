@@ -207,6 +207,7 @@ const login = async () => {
 
             if (data.token) {
                     authStore.setToken(data.token);
+                    authStore.setUser({ first_name: data.first_name, last_name: data.last_name, role: data.role });
                     username.value = '';
                     password.value = '';
             } else {

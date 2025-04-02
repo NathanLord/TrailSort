@@ -13,17 +13,21 @@
               class="mx-auto"
               max-width="344"
               v-bind="props"
+              @click="goToBlogPost(card.id)"
             >
                 <!--
                 <v-img :src="card.image"></v-img>
                 -->
+
+                <v-img v-if="card.image" :src="card.image" height="200" cover></v-img>
               
   
               <v-card-text>
                 <h2 class="text-h6 text-primary">
-                  {{ card.title }}
+                  {{ card.shortTitle }}
                 </h2>
-                {{ card.content }}
+                <p>By: {{ card.author }}</p>
+                <p>{{ card.date }} </p>
               </v-card-text>
   
               
@@ -34,7 +38,13 @@
                 scrim="primary"
                 contained
               >
+
+                <!-- View Button -->
+                <!--
                 <v-btn variant="flat">View</v-btn>
+                -->
+                
+
               </v-overlay>
             </v-card>
           </v-hover>
@@ -45,6 +55,9 @@
   
 <script setup>
     import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router'; 
+
+    const router = useRouter();
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -70,6 +83,11 @@
     // Add more cards as needed
     ];
 
+    const goToBlogPost = (id) => {
+      //console.log('Navigating to blog post with ID:', id);
+      router.push({ name: 'blog-post', params: { id } });  // Navigate to the blog post page with the id
+    };
+
     const removeHtmlTags = (htmlString) => {
         const div = document.createElement('div');
         div.innerHTML = htmlString;
@@ -94,31 +112,37 @@
     const retrieveBlogs = async () => {
         try {
             const headers = {
-            'Content-Type': 'application/json',
+              'Content-Type': 'application/json',
             };
 
             // Perform GET request to retrieve blog posts
             const response = await fetch(`${backendUrl}/blog/retrieve`, {
-            method: 'GET',
-            headers: headers,
+              method: 'GET',
+              headers: headers,
             });
 
             // Handle the response and check if it's successful
             if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             // Parse the response JSON and map to desired format
             const data = await response.json();
-             // Log the response to inspect the structure
+            // Log the response to inspect the structure
             //console.log('Received data:', data);
 
             // Check if the data is an array before calling map
             if (Array.isArray(data)) {
                 blogPosts.value = data.map((blog) => {
                     return {
-                    title: removeHtmlTags(blog.title), 
-                    content: getFirstH2Text(blog.content), 
+                    id: blog.id,
+                    shortTitle: removeHtmlTags(blog.title), 
+                    shortContent: getFirstH2Text(blog.content),
+                    title: blog.title,
+                    content: blog.content, 
+                    image: blog.image ? `data:image/png;base64,${blog.image}` : null, // Handle base64 image
+                    author: blog.author,
+                    date: blog.date
                     };
                 });
             } else {

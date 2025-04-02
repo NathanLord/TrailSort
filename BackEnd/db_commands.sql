@@ -14,11 +14,14 @@ CREATE TABLE users (
 );
 
 
-
 CREATE TABLE blog_posts (
   id SERIAL PRIMARY KEY,
   title VARCHAR(255),
   content TEXT NOT NULL,
+  author VARCHAR(255),  -- Add author column to store author's name
+  date VARCHAR(255),    -- Add date column to store a custom date as text
+  image BYTEA,          -- Add image column to store image data in binary format
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+

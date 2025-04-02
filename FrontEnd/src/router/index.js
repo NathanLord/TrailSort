@@ -6,6 +6,7 @@ import AboutPage from '../views/AboutPage.vue'
 import SortPage from '../views/SortPage.vue'
 import UserPage from '../views/UserPage.vue'
 import BlogPage from '../views/BlogPage.vue'
+import BlogPost from '../views/BlogPost.vue';  // Page to show the full content of a single blog post
 import BlogEditor from '../views/BlogEditor.vue'
 
 const routes = [
@@ -14,6 +15,7 @@ const routes = [
     { path: '/sort', component: SortPage, name: 'sortPage' },
     { path: '/user', component: UserPage, name: 'userPage' },
     { path: '/blog', component: BlogPage, name: 'blog' },
+    { path: '/blog/:id', component: BlogPost, name: 'blog-post' }, // This is the dynamic route
     { path: '/blog/editor', component: BlogEditor, name: 'blogEditor',  meta: { requiresAuth: true } },
     
 ]
