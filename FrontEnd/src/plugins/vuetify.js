@@ -29,6 +29,20 @@ const vuetify = createVuetify({
                     orangeDarken4: '#E65100',
                 },
             },
+            light: {
+                colors: {
+                    background: '#FFFFFF',
+                    surface: '#F5F5F5',
+                    primary: '#FB8C00',
+                    secondary: '#424242',
+                    error: '#D32F2F',
+
+                    orangeDarken1: '#FB8C00',
+                    orangeDarken2: '#F57C00',
+                    orangeDarken3: '#EF6C00',
+                    orangeDarken4: '#E65100',
+                },
+            },
         },
     },
     icons: {

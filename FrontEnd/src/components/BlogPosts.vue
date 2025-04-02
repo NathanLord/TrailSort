@@ -14,6 +14,7 @@
               max-width="344"
               v-bind="props"
               @click="goToBlogPost(card.id)"
+              :style="{ backgroundColor: 'transparent', boxShadow: 'none', border: 'none' }"
             >
                 <!--
                 <v-img :src="card.image"></v-img>

@@ -4,11 +4,28 @@
 
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title  class="text-center flex-grow-1">Trail Sort</v-toolbar-title>
+      <!-- <router-link to="/" class="router-link text-center flex-grow-1"> -->
+      <!-- Title Wrapper for Centering -->
+      <div class="title-container">
+        <router-link to="/" class="router-link">
+          <v-toolbar-title>Trail Sort</v-toolbar-title>
+        </router-link>
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <v-switch
+        v-model="isDark"
+        :label="isDark ? 'Dark Mode' : 'Light Mode'"
+        @change="toggleTheme"
+        inset
+      ></v-switch>
+
+      
 
       <router-link to="/user">
-        <v-btn icon color="white">
-          <v-icon>mdi-account-circle</v-icon>
+        <v-btn icon >
+          <v-icon class="user-icon" >mdi-account-circle</v-icon>
         </v-btn>
       </router-link>
 
@@ -20,7 +37,7 @@
 
           <router-link :to="item.route" class="router-link" exact>
 
-            <v-btn icon>
+            <v-btn icon class="icon-btn">
                 <v-icon >{{ item.icon }}</v-icon>
             </v-btn>
             
@@ -44,7 +61,8 @@
 
 <script setup>
 
-  import { ref } from 'vue'
+  import { ref, watchEffect } from 'vue'
+  import { useTheme } from 'vuetify'
 
   const drawer = ref(false)
   const items = [
@@ -53,6 +71,19 @@
     { title: 'Sort', icon: 'mdi-file-document-arrow-right ', route: '/sort' },
     { title: 'Blog', icon: 'mdi-post-outline', route: '/blog' }
   ]
+
+  
+
+  const theme = useTheme()
+  const isDark = ref(theme.global.current.value.dark)
+
+  const toggleTheme = () => {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+  }
+
+  watchEffect(() => {
+    isDark.value = theme.global.current.value.dark
+  })
 
   function onClickOutside() {
     console.log('onClickOutside called')
@@ -72,20 +103,36 @@
 
   
 <style scoped>
+
+  .title-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .v-application {
     font-family: 'Roboto', sans-serif;
+  }
+
+  .user-icon {
+    color: rgb(var(--v-theme-on-surface)) !important;
+  }
+
+  .icon-btn {
+    box-shadow: none !important;
+    outline: none !important;
   }
 
   /* Make sure the router-link doesn't have underline and text color is white */
   .router-link {
     text-decoration: none;
-    color: white; 
     display: flex;
     align-items: center;
+    color: rgb(var(--v-theme-on-surface));
   }
 
   .router-link-exact-active{
-    color: rgb(var(--v-theme-orangeDarken1)); /* https://stackoverflow.com/questions/48280990/using-custom-theming-in-vuetify-and-pass-color-variables-to-components */
+    color: rgb(var(--v-theme-primary)); /* https://stackoverflow.com/questions/48280990/using-custom-theming-in-vuetify-and-pass-color-variables-to-components */
   }
 
   .v-btn--variant-elevated, 
@@ -95,7 +142,7 @@
 
   .v-list-item--active .v-btn--variant-elevated,
   .v-list-item--active .v-btn--variant-flat {
-    color: rgb(var(--v-theme-orangeDarken1));
+    color: rgb(var(--v-theme-primary));
   }
     
 

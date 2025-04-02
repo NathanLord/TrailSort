@@ -40,6 +40,17 @@
             Download
         </v-btn>
 
+        <!-- TensorFlow Jupyter Notebook -->
+         <h2 class=" mt-8">TensorFlow Jupyter Notebook</h2>
+         <h3>{{ modelSelect?.selectedBackEnd }}</h3>
+        <iframe
+            class="mt-8"
+            :src="modelSelect?.selectedSource"
+            width="100%"
+            height="800px"
+            style="border: none"
+        ></iframe>
+
 
 
     </v-container>
