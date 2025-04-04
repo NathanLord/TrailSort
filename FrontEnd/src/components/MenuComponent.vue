@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app height="80" >
 
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
@@ -8,7 +8,9 @@
       <!-- Title Wrapper for Centering -->
       <div class="title-container">
         <router-link to="/" class="router-link">
-          <v-toolbar-title>Trail Sort</v-toolbar-title>
+          <v-toolbar-title >
+            Trail Sort
+          </v-toolbar-title>
         </router-link>
       </div>
 
